@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:torq/core/database/app_database.dart';
 import 'package:torq/core/services/backup_service.dart';
+import 'package:torq/core/services/cloud_sync_service.dart';
 import 'package:torq/core/services/monetization_service.dart';
 import 'package:torq/core/services/notification_service.dart';
 import 'package:torq/core/services/pdf_service.dart';
@@ -42,6 +43,9 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<PdfService>(PdfService.new);
   sl.registerLazySingleton<BackupService>(
     () => BackupService(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<CloudSyncService>(
+    () => CloudSyncService(backupService: sl<BackupService>()),
   );
 
   // Repositories
