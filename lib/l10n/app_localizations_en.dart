@@ -24,10 +24,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navFuel => 'Fuel';
 
   @override
+  String get navFuelAndCosts => 'Fuel & Costs';
+
+  @override
+  String get navAnalytics => 'Analytics';
+
+  @override
   String get navExpenses => 'Expenses';
 
   @override
   String get navSettings => 'Settings';
+
+  @override
+  String get garageTitle => 'My Garage';
+
+  @override
+  String get addVehicle => 'Add Vehicle';
+
+  @override
+  String get currentOdometer => 'Current Odometer';
+
+  @override
+  String get updateOdometer => 'Update Odo';
+
+  @override
+  String get urgentAlerts => 'Attention Needed';
+
+  @override
+  String get allSystemsOk => 'All maintenance & documents are up to date';
+
+  @override
+  String get monthlySpend => 'This Month Spend';
+
+  @override
+  String get avgFuelEconomy => 'Avg Economy';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get logService => 'Log Service';
+
+  @override
+  String get logFuel => 'Log Fuel';
+
+  @override
+  String get logExpense => 'Log Expense';
 
   @override
   String get statusOk => 'OK';
@@ -128,4 +170,80 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get emptyExpensesSubtitle =>
       'Track insurance, washes, parking, tolls, and repairs in one place.';
+
+  @override
+  String get paywallTitle => 'Torq Pro';
+
+  @override
+  String get paywallSubtitle =>
+      'Unlock unlimited vehicles, clean resale PDFs, backups, and zero ads.';
+
+  @override
+  String get paywallUnlimitedCars => 'Unlimited Cars';
+
+  @override
+  String get paywallCleanPdf => 'Clean Resale PDF';
+
+  @override
+  String get paywallReceiptPhotos => 'Receipt Photos';
+
+  @override
+  String get paywallJsonBackup => 'JSON Backup & Restore';
+
+  @override
+  String get paywallZeroAds => 'Zero Ads';
+
+  @override
+  String get paywallMonthly => 'Monthly';
+
+  @override
+  String get paywallYearly => 'Yearly';
+
+  @override
+  String get paywallLifetime => 'Lifetime';
+
+  @override
+  String get paywallRestore => 'Restore Purchases';
+
+  @override
+  String get settingsAppearanceLanguage => 'Appearance & Language';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsDark => 'Dark';
+
+  @override
+  String get settingsLight => 'Light';
+
+  @override
+  String get settingsUnitsCurrency => 'Units & Currency';
+
+  @override
+  String get settingsDefaultDistanceUnit => 'Default Distance Unit';
+
+  @override
+  String get settingsDefaultCurrency => 'Default Currency';
+
+  @override
+  String get settingsDataBackup => 'Data & Backup';
+
+  @override
+  String get settingsExportBackup => 'Export JSON Backup';
+
+  @override
+  String get settingsRestoreBackup => 'Restore JSON Backup';
+
+  @override
+  String get settingsUpgradePro => 'Upgrade to Torq Pro';
+
+  @override
+  String get settingsProActive => 'Torq Pro Active';
+
+  @override
+  String get exportResalePdf => 'Export Resale Maintenance Report (PDF)';
 }

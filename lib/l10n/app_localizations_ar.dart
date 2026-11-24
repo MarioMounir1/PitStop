@@ -24,10 +24,52 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navFuel => 'الوقود';
 
   @override
+  String get navFuelAndCosts => 'الوقود والمصاريف';
+
+  @override
+  String get navAnalytics => 'التحليلات';
+
+  @override
   String get navExpenses => 'المصاريف';
 
   @override
   String get navSettings => 'الإعدادات';
+
+  @override
+  String get garageTitle => 'الجراج';
+
+  @override
+  String get addVehicle => 'إضافة سيارة';
+
+  @override
+  String get currentOdometer => 'العداد الحالي';
+
+  @override
+  String get updateOdometer => 'تحديث العداد';
+
+  @override
+  String get urgentAlerts => 'تنبيهات عاجلة';
+
+  @override
+  String get allSystemsOk => 'جميع الصيانات والأوراق محدثة وبحالة ممتازة';
+
+  @override
+  String get monthlySpend => 'مصاريف هذا الشهر';
+
+  @override
+  String get avgFuelEconomy => 'متوسط الاستهلاك';
+
+  @override
+  String get quickActions => 'إجراءات سريعة';
+
+  @override
+  String get logService => 'تسجيل صيانة';
+
+  @override
+  String get logFuel => 'تسجيل وقود';
+
+  @override
+  String get logExpense => 'تسجيل مصروف';
 
   @override
   String get statusOk => 'سليم';
@@ -128,4 +170,80 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get emptyExpensesSubtitle =>
       'تابع التأمين والغسيل والركن والرسوم والإصلاحات في مكان واحد.';
+
+  @override
+  String get paywallTitle => 'تورك برو';
+
+  @override
+  String get paywallSubtitle =>
+      'احصل على تجربة كاملة بلا إعلانات وتقارير بيع احترافية.';
+
+  @override
+  String get paywallUnlimitedCars => 'سيارات غير محدودة';
+
+  @override
+  String get paywallCleanPdf => 'تقرير بيع PDF بدون علامة مائية';
+
+  @override
+  String get paywallReceiptPhotos => 'حفظ صور الفواتير';
+
+  @override
+  String get paywallJsonBackup => 'نسخ احتياطي واستعادة JSON';
+
+  @override
+  String get paywallZeroAds => 'بدون إعلانات نهائياً';
+
+  @override
+  String get paywallMonthly => 'شهري';
+
+  @override
+  String get paywallYearly => 'سنوي';
+
+  @override
+  String get paywallLifetime => 'مدى الحياة';
+
+  @override
+  String get paywallRestore => 'استعادة المشتريات';
+
+  @override
+  String get settingsAppearanceLanguage => 'المظهر واللغة';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get settingsTheme => 'المظهر';
+
+  @override
+  String get settingsDark => 'داكن';
+
+  @override
+  String get settingsLight => 'فاتح';
+
+  @override
+  String get settingsUnitsCurrency => 'الوحدات والعملة';
+
+  @override
+  String get settingsDefaultDistanceUnit => 'وحدة المسافة الافتراضية';
+
+  @override
+  String get settingsDefaultCurrency => 'العملة الافتراضية';
+
+  @override
+  String get settingsDataBackup => 'البيانات والنسخ الاحتياطي';
+
+  @override
+  String get settingsExportBackup => 'تصدير نسخة احتياطية (JSON)';
+
+  @override
+  String get settingsRestoreBackup => 'استعادة من نسخة احتياطية (JSON)';
+
+  @override
+  String get settingsUpgradePro => 'ترقية إلى تورك برو';
+
+  @override
+  String get settingsProActive => 'تورك برو مفعّل';
+
+  @override
+  String get exportResalePdf => 'تصدير تقرير صيانة لإعادة البيع (PDF)';
 }

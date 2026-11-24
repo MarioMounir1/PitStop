@@ -19,12 +19,14 @@ class AnalyticsPage extends StatelessWidget {
     required this.vehicle,
     this.onExportPdf,
     this.isExportingPdf = false,
+    this.appBarActions,
     super.key,
   });
 
   final Vehicle? vehicle;
   final VoidCallback? onExportPdf;
   final bool isExportingPdf;
+  final List<Widget>? appBarActions;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class AnalyticsPage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text(isArabic ? 'التحليلات' : 'Analytics'),
+          actions: appBarActions,
         ),
         body: EmptyStateWidget(
           icon: Icons.insights_outlined,
@@ -54,6 +57,7 @@ class AnalyticsPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(isArabic ? 'التحليلات' : 'Analytics'),
+            actions: appBarActions,
           ),
           body: state.status == AnalyticsLoadStatus.loading &&
                   state.monthlySpend.isEmpty

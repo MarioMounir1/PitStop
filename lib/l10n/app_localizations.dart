@@ -128,6 +128,18 @@ abstract class AppLocalizations {
   /// **'Fuel'**
   String get navFuel;
 
+  /// No description provided for @navFuelAndCosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel & Costs'**
+  String get navFuelAndCosts;
+
+  /// No description provided for @navAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get navAnalytics;
+
   /// No description provided for @navExpenses.
   ///
   /// In en, this message translates to:
@@ -139,6 +151,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get navSettings;
+
+  /// No description provided for @garageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Garage'**
+  String get garageTitle;
+
+  /// No description provided for @addVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Vehicle'**
+  String get addVehicle;
+
+  /// No description provided for @currentOdometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Odometer'**
+  String get currentOdometer;
+
+  /// No description provided for @updateOdometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Odo'**
+  String get updateOdometer;
+
+  /// No description provided for @urgentAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention Needed'**
+  String get urgentAlerts;
+
+  /// No description provided for @allSystemsOk.
+  ///
+  /// In en, this message translates to:
+  /// **'All maintenance & documents are up to date'**
+  String get allSystemsOk;
+
+  /// No description provided for @monthlySpend.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month Spend'**
+  String get monthlySpend;
+
+  /// No description provided for @avgFuelEconomy.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Economy'**
+  String get avgFuelEconomy;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @logService.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Service'**
+  String get logService;
+
+  /// No description provided for @logFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Fuel'**
+  String get logFuel;
+
+  /// No description provided for @logExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Expense'**
+  String get logExpense;
 
   /// No description provided for @statusOk.
   ///
@@ -331,6 +415,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Track insurance, washes, parking, tolls, and repairs in one place.'**
   String get emptyExpensesSubtitle;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Torq Pro'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock unlimited vehicles, clean resale PDFs, backups, and zero ads.'**
+  String get paywallSubtitle;
+
+  /// No description provided for @paywallUnlimitedCars.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited Cars'**
+  String get paywallUnlimitedCars;
+
+  /// No description provided for @paywallCleanPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean Resale PDF'**
+  String get paywallCleanPdf;
+
+  /// No description provided for @paywallReceiptPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt Photos'**
+  String get paywallReceiptPhotos;
+
+  /// No description provided for @paywallJsonBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON Backup & Restore'**
+  String get paywallJsonBackup;
+
+  /// No description provided for @paywallZeroAds.
+  ///
+  /// In en, this message translates to:
+  /// **'Zero Ads'**
+  String get paywallZeroAds;
+
+  /// No description provided for @paywallMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get paywallMonthly;
+
+  /// No description provided for @paywallYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get paywallYearly;
+
+  /// No description provided for @paywallLifetime.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime'**
+  String get paywallLifetime;
+
+  /// No description provided for @paywallRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get paywallRestore;
+
+  /// No description provided for @settingsAppearanceLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance & Language'**
+  String get settingsAppearanceLanguage;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @settingsDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settingsDark;
+
+  /// No description provided for @settingsLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settingsLight;
+
+  /// No description provided for @settingsUnitsCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Units & Currency'**
+  String get settingsUnitsCurrency;
+
+  /// No description provided for @settingsDefaultDistanceUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Distance Unit'**
+  String get settingsDefaultDistanceUnit;
+
+  /// No description provided for @settingsDefaultCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Currency'**
+  String get settingsDefaultCurrency;
+
+  /// No description provided for @settingsDataBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Data & Backup'**
+  String get settingsDataBackup;
+
+  /// No description provided for @settingsExportBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Export JSON Backup'**
+  String get settingsExportBackup;
+
+  /// No description provided for @settingsRestoreBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore JSON Backup'**
+  String get settingsRestoreBackup;
+
+  /// No description provided for @settingsUpgradePro.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Torq Pro'**
+  String get settingsUpgradePro;
+
+  /// No description provided for @settingsProActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Torq Pro Active'**
+  String get settingsProActive;
+
+  /// No description provided for @exportResalePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Resale Maintenance Report (PDF)'**
+  String get exportResalePdf;
 }
 
 class _AppLocalizationsDelegate
