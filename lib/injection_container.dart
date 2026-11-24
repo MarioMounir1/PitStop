@@ -1,12 +1,14 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:torq/core/database/app_database.dart';
+import 'package:torq/core/services/auth_service.dart';
 import 'package:torq/core/services/backup_service.dart';
 import 'package:torq/core/services/cloud_sync_service.dart';
 import 'package:torq/core/services/monetization_service.dart';
 import 'package:torq/core/services/notification_service.dart';
 import 'package:torq/core/services/pdf_service.dart';
 import 'package:torq/features/analytics/presentation/bloc/analytics_bloc.dart';
+import 'package:torq/features/auth/cubit/auth_cubit.dart';
 import 'package:torq/features/expenses/data/repositories/expenses_repository_impl.dart';
 import 'package:torq/features/expenses/domain/repositories/expenses_repository.dart';
 import 'package:torq/features/expenses/presentation/bloc/expenses_bloc.dart';
@@ -44,6 +46,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<BackupService>(
     () => BackupService(sl<AppDatabase>()),
   );
+  sl.registerLazySingleton<AuthService>(AuthService.new);
   sl.registerLazySingleton<CloudSyncService>(
     () => CloudSyncService(backupService: sl<BackupService>()),
   );
@@ -63,6 +66,12 @@ Future<void> initDependencies() async {
   );
 
   // Cubits & BLoCs
+  sl.registerFactory<AuthCubit>(
+    () => AuthCubit(
+      authService: sl<AuthService>(),
+      cloudSyncService: sl<CloudSyncService>(),
+    ),
+  );
   sl.registerFactory<SettingsCubit>(
     () => SettingsCubit(sl<SharedPreferences>()),
   );

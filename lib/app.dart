@@ -9,6 +9,7 @@ import 'package:torq/core/services/notification_service.dart';
 import 'package:torq/core/theme/app_theme.dart';
 import 'package:torq/features/analytics/presentation/bloc/analytics_bloc.dart';
 import 'package:torq/features/analytics/presentation/bloc/analytics_event.dart';
+import 'package:torq/features/auth/cubit/auth_cubit.dart';
 import 'package:torq/features/expenses/presentation/bloc/expenses_bloc.dart';
 import 'package:torq/features/expenses/presentation/bloc/expenses_event.dart';
 import 'package:torq/features/fuel/presentation/bloc/fuel_bloc.dart';
@@ -123,6 +124,7 @@ class _TorqAppState extends State<TorqApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AuthCubit>(create: (_) => sl<AuthCubit>()),
         BlocProvider<SettingsCubit>(create: (_) => sl<SettingsCubit>()),
         BlocProvider<EntitlementCubit>(
           create: (_) => sl<EntitlementCubit>()..loadEntitlements(),

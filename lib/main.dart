@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:torq/app.dart';
@@ -5,6 +6,13 @@ import 'package:torq/injection_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase safely (Android/iOS use google-services.json / Info.plist).
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase.initializeApp skipped: $e');
+  }
 
   // Android 15 edge-to-edge system chrome configuration.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);

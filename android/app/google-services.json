@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "825533843160",
+    "project_id": "pitstop-87ad3",
+    "storage_bucket": "pitstop-87ad3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825533843160:android:9ab9f4b6fa5879ae1139ad",
+        "android_client_info": {
+          "package_name": "com.torq.torq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUNtmtj5NVJmx2llTcL-lDjckDT7XcxSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

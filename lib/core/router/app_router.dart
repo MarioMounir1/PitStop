@@ -7,6 +7,7 @@ import 'package:torq/core/services/backup_service.dart';
 import 'package:torq/core/services/pdf_service.dart';
 import 'package:torq/core/widgets/ad_banner_widget.dart';
 import 'package:torq/features/analytics/presentation/pages/analytics_page.dart';
+import 'package:torq/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:torq/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:torq/features/expenses/presentation/pages/add_expense_page.dart';
 import 'package:torq/features/expenses/presentation/pages/fuel_and_expenses_page.dart';
@@ -165,10 +166,15 @@ GoRouter createAppRouter() {
         },
       ),
       GoRoute(
+        path: '/sign-in',
+        builder: (context, state) => const SignInPage(),
+      ),
+      GoRoute(
         path: '/settings',
         builder: (context, state) {
           return SettingsPage(
             backupService: sl<BackupService>(),
+            onOpenSignIn: () => context.push('/sign-in'),
             onBackupRestored: () {
               context.read<GarageBloc>().add(const GarageStarted());
             },

@@ -96,6 +96,11 @@ class DashboardPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
+            tooltip: isArabic ? 'الحساب' : 'Account',
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => context.push('/sign-in'),
+          ),
+          IconButton(
             tooltip: l10n.garageTitle,
             icon: const Icon(Icons.directions_car_outlined),
             onPressed: () => context.push('/garage'),

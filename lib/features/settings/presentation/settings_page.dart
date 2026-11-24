@@ -6,6 +6,8 @@ import 'package:torq/core/services/backup_service.dart';
 import 'package:torq/core/theme/app_colors.dart';
 import 'package:torq/core/widgets/ad_banner_widget.dart';
 import 'package:torq/core/widgets/pro_badge_widget.dart';
+import 'package:torq/features/auth/cubit/auth_cubit.dart';
+import 'package:torq/features/auth/cubit/auth_state.dart';
 import 'package:torq/features/paywall/cubit/entitlement_cubit.dart';
 import 'package:torq/features/paywall/cubit/entitlement_state.dart';
 import 'package:torq/features/paywall/presentation/paywall_sheet.dart';
@@ -18,11 +20,13 @@ class SettingsPage extends StatelessWidget {
   const SettingsPage({
     this.backupService,
     this.onBackupRestored,
+    this.onOpenSignIn,
     super.key,
   });
 
   final BackupService? backupService;
   final VoidCallback? onBackupRestored;
+  final VoidCallback? onOpenSignIn;
 
   Future<void> _handleExportBackup(BuildContext context, bool isPro) async {
     if (!isPro) {
@@ -143,6 +147,12 @@ class SettingsPage extends StatelessWidget {
                     child: ListView(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                       children: [
+                        _AccountAndSyncCard(
+                          isArabic: isArabic,
+                          onOpenSignIn: onOpenSignIn,
+                          onRestored: onBackupRestored,
+                        ),
+                        const SizedBox(height: 16),
                         _ProUpgradeCard(
                           isPro: entitlement.isPro,
                           isArabic: isArabic,
@@ -416,6 +426,187 @@ class SettingsPage extends StatelessWidget {
               ),
             );
           },
+        );
+      },
+    );
+  }
+}
+
+class _AccountAndSyncCard extends StatelessWidget {
+  const _AccountAndSyncCard({
+    required this.isArabic,
+    required this.onOpenSignIn,
+    required this.onRestored,
+  });
+
+  final bool isArabic;
+  final VoidCallback? onOpenSignIn;
+  final VoidCallback? onRestored;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+
+    return BlocConsumer<AuthCubit, AuthState>(
+      listenWhen: (prev, curr) =>
+          (curr.error != null && curr.error != prev.error) ||
+          (curr.statusMessage != null &&
+              curr.statusMessage != prev.statusMessage),
+      listener: (context, state) {
+        final msg = state.error ?? state.statusMessage;
+        if (msg != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg)),
+          );
+          context.read<AuthCubit>().clearMessages();
+        }
+      },
+      builder: (context, authState) {
+        final user = authState.user;
+
+        if (user == null) {
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.cloud_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isArabic
+                              ? 'الحساب والمزامنة السحابية'
+                              : 'Account & Cloud Sync',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isArabic
+                              ? 'سجّل الدخول لحفظ بياناتك على Firebase'
+                              : 'Sign in to sync your garage with Firebase',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: colors.textSecondary),
+                        ),
+                      ],
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: onOpenSignIn,
+                    child: Text(isArabic ? 'دخول' : 'Sign In'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        final displayTitle = user.isAnonymous
+            ? (isArabic ? 'حساب ضيف' : 'Guest Account')
+            : (user.displayName?.isNotEmpty == true
+                ? user.displayName!
+                : (user.email ?? 'Torq User'));
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.16),
+                      child: const Icon(
+                        Icons.person_rounded,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayTitle,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          if (user.email != null && user.email!.isNotEmpty)
+                            Text(
+                              user.email!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: colors.textSecondary),
+                            ),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: authState.isLoading
+                          ? null
+                          : () => context.read<AuthCubit>().signOut(),
+                      child: Text(
+                        isArabic ? 'خروج' : 'Sign Out',
+                        style: const TextStyle(color: AppColors.overdue),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: authState.isSyncing
+                            ? null
+                            : () => context.read<AuthCubit>().syncPushToCloud(),
+                        icon: const Icon(Icons.cloud_upload_outlined, size: 18),
+                        label: Text(isArabic ? 'رفع للسحابة' : 'Push Sync'),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: authState.isSyncing
+                            ? null
+                            : () async {
+                                final ok = await context
+                                    .read<AuthCubit>()
+                                    .syncPullFromCloud();
+                                if (ok) onRestored?.call();
+                              },
+                        icon:
+                            const Icon(Icons.cloud_download_outlined, size: 18),
+                        label: Text(isArabic ? 'استعادة' : 'Pull Sync'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
