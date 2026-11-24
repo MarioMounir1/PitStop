@@ -1,4 +1,4 @@
-# Torq — Car Maintenance, Fuel & Expense Tracker
+# PitStop— Car Maintenance, Fuel & Expense Tracker
 
 An offline-first Flutter application for tracking vehicle maintenance schedules, fuel efficiency, general car expenses, spending analytics, and generating verified A4 resale maintenance reports in **English (LTR)** and **Arabic (RTL)**.
 
