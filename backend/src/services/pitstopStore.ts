@@ -8,7 +8,7 @@ import {
   VehicleDto,
 } from '../schemas/models';
 
-export interface TorqDataStore {
+export interface PitStopDataStore {
   listVehicles(uid: string): Promise<VehicleDto[]>;
   upsertVehicle(uid: string, vehicle: VehicleDto): Promise<VehicleDto>;
   updateVehicle(
@@ -64,7 +64,7 @@ export interface TorqDataStore {
  * `users/{uid}/fuelLogs/{id}`
  * `users/{uid}/expenses/{id}`
  */
-export class FirestoreTorqStore implements TorqDataStore {
+export class FirestorePitStopStore implements PitStopDataStore {
   private get db(): admin.firestore.Firestore {
     return getFirestoreDb();
   }

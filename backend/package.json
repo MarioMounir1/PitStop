@@ -1,7 +1,7 @@
 {
-  "name": "torq-backend",
+  "name": "pitstop-backend",
   "version": "1.0.0",
-  "description": "Node.js + Firebase (Firestore & Auth) backend API for Torq Car Maintenance, Fuel & Expense Tracker",
+  "description": "Node.js + Firebase (Firestore & Auth) backend API for PitStop Car Maintenance, Fuel & Expense Tracker",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

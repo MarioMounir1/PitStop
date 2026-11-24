@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:torq/app.dart';
-import 'package:torq/injection_container.dart';
+import 'package:pitstop/app.dart';
+import 'package:pitstop/injection_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,5 +26,5 @@ Future<void> main() async {
 
   await initDependencies();
 
-  runApp(const TorqApp());
+  runApp(const PitStopApp());
 }

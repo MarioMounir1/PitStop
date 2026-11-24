@@ -1,4 +1,4 @@
-import 'package:torq/core/database/app_database.dart';
+import 'package:pitstop/core/database/app_database.dart';
 
 /// Domain contract for vehicle fuel fill-up logs.
 abstract class FuelRepository {

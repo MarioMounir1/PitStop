@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/fuel_calculator.dart';
-import 'package:torq/features/fuel/domain/repositories/fuel_repository.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_event.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/fuel_calculator.dart';
+import 'package:pitstop/features/fuel/domain/repositories/fuel_repository.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_event.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_state.dart';
 
 /// BLoC managing fuel fill-up history, average `km/L`, monthly fuel spend,
 /// and total liters for the active vehicle.

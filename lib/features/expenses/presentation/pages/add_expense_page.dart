@@ -2,11 +2,11 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/features/expenses/domain/constants/expense_categories.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_bloc.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_event.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/features/expenses/domain/constants/expense_categories.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_bloc.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_event.dart';
 import 'package:uuid/uuid.dart';
 
 /// Form page for adding a general vehicle expense.

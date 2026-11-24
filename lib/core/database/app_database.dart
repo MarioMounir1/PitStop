@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:torq/core/database/tables/expenses_table.dart';
-import 'package:torq/core/database/tables/fuel_logs_table.dart';
-import 'package:torq/core/database/tables/maintenance_records_table.dart';
-import 'package:torq/core/database/tables/vehicles_table.dart';
+import 'package:pitstop/core/database/tables/expenses_table.dart';
+import 'package:pitstop/core/database/tables/fuel_logs_table.dart';
+import 'package:pitstop/core/database/tables/maintenance_records_table.dart';
+import 'package:pitstop/core/database/tables/vehicles_table.dart';
 
 part 'app_database.g.dart';
 
@@ -30,6 +30,6 @@ class AppDatabase extends _$AppDatabase {
       );
 
   static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'torq_db');
+    return driftDatabase(name: 'pitstop_db');
   }
 }

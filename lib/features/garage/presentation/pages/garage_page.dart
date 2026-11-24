@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/utils/reminder_calculator.dart';
-import 'package:torq/core/widgets/empty_state_widget.dart';
-import 'package:torq/core/widgets/pro_badge_widget.dart';
-import 'package:torq/core/widgets/status_chip.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_bloc.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_event.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_state.dart';
-import 'package:torq/features/garage/presentation/pages/add_edit_vehicle_page.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/utils/reminder_calculator.dart';
+import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/core/widgets/pro_badge_widget.dart';
+import 'package:pitstop/core/widgets/status_chip.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_bloc.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_event.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_state.dart';
+import 'package:pitstop/features/garage/presentation/pages/add_edit_vehicle_page.dart';
 
 /// Displays all vehicles in the user's garage with quick odometer updates,
 /// active switching, and license/insurance expiry badges.

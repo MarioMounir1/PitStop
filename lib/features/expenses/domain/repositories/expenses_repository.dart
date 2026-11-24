@@ -1,4 +1,4 @@
-import 'package:torq/core/database/app_database.dart';
+import 'package:pitstop/core/database/app_database.dart';
 
 /// Domain contract for general vehicle expenses.
 abstract class ExpensesRepository {

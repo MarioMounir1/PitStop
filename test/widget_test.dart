@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/fuel_calculator.dart';
-import 'package:torq/core/utils/reminder_calculator.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/fuel_calculator.dart';
+import 'package:pitstop/core/utils/reminder_calculator.dart';
 
 void main() {
   group('ReminderCalculator', () {

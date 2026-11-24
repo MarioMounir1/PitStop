@@ -2,20 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/services/backup_service.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/widgets/ad_banner_widget.dart';
-import 'package:torq/core/widgets/pro_badge_widget.dart';
-import 'package:torq/features/auth/cubit/auth_cubit.dart';
-import 'package:torq/features/auth/cubit/auth_state.dart';
-import 'package:torq/features/paywall/cubit/entitlement_cubit.dart';
-import 'package:torq/features/paywall/cubit/entitlement_state.dart';
-import 'package:torq/features/paywall/presentation/paywall_sheet.dart';
-import 'package:torq/features/settings/cubit/settings_cubit.dart';
-import 'package:torq/features/settings/cubit/settings_state.dart';
+import 'package:pitstop/core/services/backup_service.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/widgets/ad_banner_widget.dart';
+import 'package:pitstop/core/widgets/pro_badge_widget.dart';
+import 'package:pitstop/features/auth/cubit/auth_cubit.dart';
+import 'package:pitstop/features/auth/cubit/auth_state.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_cubit.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_state.dart';
+import 'package:pitstop/features/paywall/presentation/paywall_sheet.dart';
+import 'package:pitstop/features/settings/cubit/settings_cubit.dart';
+import 'package:pitstop/features/settings/cubit/settings_state.dart';
 
 /// Grouped Material 3 settings screen for language, theme, units, currency,
-/// Pro-gated JSON backup/restore, and Torq Pro upgrade.
+/// Pro-gated JSON backup/restore, and PitStop Pro upgrade.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({
     this.backupService,
@@ -76,8 +76,8 @@ class SettingsPage extends StatelessWidget {
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: isArabic
-                    ? '{"app": "torq", ...} أو مسار الملف'
-                    : '{"app": "torq", ...} or file path',
+                    ? '{"app": "pitstop", ...} أو مسار الملف'
+                    : '{"app": "pitstop", ...} or file path',
               ),
             ),
           ],
@@ -523,7 +523,7 @@ class _AccountAndSyncCard extends StatelessWidget {
             ? (isArabic ? 'حساب ضيف' : 'Guest Account')
             : (user.displayName?.isNotEmpty == true
                 ? user.displayName!
-                : (user.email ?? 'Torq User'));
+                : (user.email ?? 'PitStop User'));
 
         return Card(
           child: Padding(
@@ -667,7 +667,7 @@ class _ProUpgradeCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isArabic ? 'تورك برو مفعّل' : 'Torq Pro Active',
+                    isArabic ? 'بيت ستوب برو مفعّل' : 'PitStop Pro Active',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: AppColors.ok,
@@ -715,7 +715,7 @@ class _ProUpgradeCard extends StatelessWidget {
                   const ProBadgeWidget(),
                   const SizedBox(height: 10),
                   Text(
-                    isArabic ? 'ترقية إلى تورك برو' : 'Upgrade to Torq Pro',
+                    isArabic ? 'ترقية إلى بيت ستوب برو' : 'Upgrade to PitStop Pro',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,

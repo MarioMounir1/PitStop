@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:torq/core/theme/app_colors.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
 
 /// Reusable empty state placeholder for lists and feature dashboards.
 class EmptyStateWidget extends StatelessWidget {

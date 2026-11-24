@@ -1,4 +1,4 @@
-import 'package:torq/core/database/app_database.dart';
+import 'package:pitstop/core/database/app_database.dart';
 
 /// Pure calculation utilities for fuel efficiency and cost-per-distance metrics.
 abstract final class FuelCalculator {

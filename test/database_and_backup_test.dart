@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/services/backup_service.dart';
-import 'package:torq/features/expenses/data/repositories/expenses_repository_impl.dart';
-import 'package:torq/features/fuel/data/repositories/fuel_repository_impl.dart';
-import 'package:torq/features/garage/data/repositories/garage_repository_impl.dart';
-import 'package:torq/features/maintenance/data/repositories/maintenance_repository_impl.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/services/backup_service.dart';
+import 'package:pitstop/features/expenses/data/repositories/expenses_repository_impl.dart';
+import 'package:pitstop/features/fuel/data/repositories/fuel_repository_impl.dart';
+import 'package:pitstop/features/garage/data/repositories/garage_repository_impl.dart';
+import 'package:pitstop/features/maintenance/data/repositories/maintenance_repository_impl.dart';
 
 void main() {
   late AppDatabase db;

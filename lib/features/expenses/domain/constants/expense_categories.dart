@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Standard general expense categories for Torq.
+/// Standard general expense categories for PitStop.
 abstract final class ExpenseCategories {
   static const String wash = 'wash';
   static const String parking = 'parking';

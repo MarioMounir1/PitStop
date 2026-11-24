@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.torq.torq"
+    namespace = "com.pitstop.pitstop"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
@@ -17,7 +17,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.torq.torq"
+        applicationId = "com.pitstop.pitstop"
         minSdk = maxOf(23, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

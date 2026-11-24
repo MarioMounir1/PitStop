@@ -1,4 +1,4 @@
-import 'package:torq/core/widgets/status_chip.dart';
+import 'package:pitstop/core/widgets/status_chip.dart';
 
 /// Health status of a maintenance item or scheduled service.
 enum MaintenanceStatus {

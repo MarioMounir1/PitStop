@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/utils/currency_formatter.dart';
-import 'package:torq/core/widgets/empty_state_widget.dart';
-import 'package:torq/features/expenses/domain/constants/expense_categories.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_bloc.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_event.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_state.dart';
-import 'package:torq/features/expenses/presentation/pages/add_expense_page.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_bloc.dart';
-import 'package:torq/features/fuel/presentation/pages/add_fuel_log_page.dart';
-import 'package:torq/features/fuel/presentation/widgets/fuel_list_widget.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/utils/currency_formatter.dart';
+import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/features/expenses/domain/constants/expense_categories.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_bloc.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_event.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_state.dart';
+import 'package:pitstop/features/expenses/presentation/pages/add_expense_page.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_bloc.dart';
+import 'package:pitstop/features/fuel/presentation/pages/add_fuel_log_page.dart';
+import 'package:pitstop/features/fuel/presentation/widgets/fuel_list_widget.dart';
 
 enum _LedgerTab { fuel, expenses }
 

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/garage/domain/repositories/garage_repository.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/garage/domain/repositories/garage_repository.dart';
 
 /// Drift-backed implementation of [GarageRepository].
 class GarageRepositoryImpl implements GarageRepository {

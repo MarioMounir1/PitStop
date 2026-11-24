@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/fuel_calculator.dart';
-import 'package:torq/features/analytics/domain/models/analytics_models.dart';
-import 'package:torq/features/analytics/presentation/bloc/analytics_event.dart';
-import 'package:torq/features/analytics/presentation/bloc/analytics_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/fuel_calculator.dart';
+import 'package:pitstop/features/analytics/domain/models/analytics_models.dart';
+import 'package:pitstop/features/analytics/presentation/bloc/analytics_event.dart';
+import 'package:pitstop/features/analytics/presentation/bloc/analytics_state.dart';
 
 /// Aggregates Maintenance, Fuel, and General Expenses over time for charts & KPIs.
 class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {

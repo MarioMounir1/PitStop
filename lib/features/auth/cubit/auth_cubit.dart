@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/services/auth_service.dart';
-import 'package:torq/core/services/cloud_sync_service.dart';
-import 'package:torq/features/auth/cubit/auth_state.dart';
+import 'package:pitstop/core/services/auth_service.dart';
+import 'package:pitstop/core/services/cloud_sync_service.dart';
+import 'package:pitstop/features/auth/cubit/auth_state.dart';
 
 /// Manages Firebase Auth sign-in/sign-up/guest sessions and cloud sync actions.
 class AuthCubit extends Cubit<AuthState> {

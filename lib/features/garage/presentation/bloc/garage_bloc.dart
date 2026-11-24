@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/garage/domain/repositories/garage_repository.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_event.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/garage/domain/repositories/garage_repository.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_event.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_state.dart';
 
 /// BLoC managing the user's vehicle garage, active vehicle, odometer updates,
 /// and the Free-tier 1-vehicle freemium gate.

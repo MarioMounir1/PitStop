@@ -3,37 +3,37 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/router/app_router.dart';
-import 'package:torq/core/services/notification_service.dart';
-import 'package:torq/core/theme/app_theme.dart';
-import 'package:torq/features/analytics/presentation/bloc/analytics_bloc.dart';
-import 'package:torq/features/analytics/presentation/bloc/analytics_event.dart';
-import 'package:torq/features/auth/cubit/auth_cubit.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_bloc.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_event.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_bloc.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_event.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_bloc.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_event.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_state.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_bloc.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_event.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_state.dart';
-import 'package:torq/features/paywall/cubit/entitlement_cubit.dart';
-import 'package:torq/features/settings/cubit/settings_cubit.dart';
-import 'package:torq/features/settings/cubit/settings_state.dart';
-import 'package:torq/injection_container.dart';
-import 'package:torq/l10n/app_localizations.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/router/app_router.dart';
+import 'package:pitstop/core/services/notification_service.dart';
+import 'package:pitstop/core/theme/app_theme.dart';
+import 'package:pitstop/features/analytics/presentation/bloc/analytics_bloc.dart';
+import 'package:pitstop/features/analytics/presentation/bloc/analytics_event.dart';
+import 'package:pitstop/features/auth/cubit/auth_cubit.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_bloc.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_event.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_bloc.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_event.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_bloc.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_event.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_state.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_bloc.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_event.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_state.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_cubit.dart';
+import 'package:pitstop/features/settings/cubit/settings_cubit.dart';
+import 'package:pitstop/features/settings/cubit/settings_state.dart';
+import 'package:pitstop/injection_container.dart';
+import 'package:pitstop/l10n/app_localizations.dart';
 
-class TorqApp extends StatefulWidget {
-  const TorqApp({super.key});
+class PitStopApp extends StatefulWidget {
+  const PitStopApp({super.key});
 
   @override
-  State<TorqApp> createState() => _TorqAppState();
+  State<PitStopApp> createState() => _PitStopAppState();
 }
 
-class _TorqAppState extends State<TorqApp> {
+class _PitStopAppState extends State<PitStopApp> {
   late final GoRouter _router;
 
   @override
@@ -156,7 +156,7 @@ class _TorqAppState extends State<TorqApp> {
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settings) {
             return MaterialApp.router(
-              title: 'Torq',
+              title: 'PitStop',
               debugShowCheckedModeBanner: false,
               themeMode: settings.themeMode,
               theme: AppTheme.light(locale: settings.locale),

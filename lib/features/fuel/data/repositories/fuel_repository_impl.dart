@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/fuel_calculator.dart';
-import 'package:torq/features/fuel/domain/repositories/fuel_repository.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/fuel_calculator.dart';
+import 'package:pitstop/features/fuel/domain/repositories/fuel_repository.dart';
 
 /// Drift-backed implementation of [FuelRepository] that recalculates
 /// `consumptionKmPerL` on every mutation and keeps `vehicle.currentOdometer` synced.

@@ -24,5 +24,5 @@ if (
 const app = createApp();
 
 app.listen(port, () => {
-  console.log(`Torq Node.js + Firebase backend listening on http://localhost:${port}`);
+  console.log(`PitStop Node.js + Firebase backend listening on http://localhost:${port}`);
 });

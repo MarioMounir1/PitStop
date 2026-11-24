@@ -1,6 +1,6 @@
 {
   "@@locale": "ar",
-  "appName": "تورك",
+  "appName": "بيت ستوب",
   "appTagline": "متابعة صيانة السيارة والوقود والمصاريف",
   "navDashboard": "الرئيسية",
   "navMaintenance": "الصيانة",
@@ -53,7 +53,7 @@
   "emptyFuelSubtitle": "سجّل عملية التزود بالوقود لحساب الاستهلاك والمصروف الشهري.",
   "emptyExpensesTitle": "لا توجد مصاريف بعد",
   "emptyExpensesSubtitle": "تابع التأمين والغسيل والركن والرسوم والإصلاحات في مكان واحد.",
-  "paywallTitle": "تورك برو",
+  "paywallTitle": "بيت ستوب برو",
   "paywallSubtitle": "احصل على تجربة كاملة بلا إعلانات وتقارير بيع احترافية.",
   "paywallUnlimitedCars": "سيارات غير محدودة",
   "paywallCleanPdf": "تقرير بيع PDF بدون علامة مائية",
@@ -75,7 +75,7 @@
   "settingsDataBackup": "البيانات والنسخ الاحتياطي",
   "settingsExportBackup": "تصدير نسخة احتياطية (JSON)",
   "settingsRestoreBackup": "استعادة من نسخة احتياطية (JSON)",
-  "settingsUpgradePro": "ترقية إلى تورك برو",
-  "settingsProActive": "تورك برو مفعّل",
+  "settingsUpgradePro": "ترقية إلى بيت ستوب برو",
+  "settingsProActive": "بيت ستوب برو مفعّل",
   "exportResalePdf": "تصدير تقرير صيانة لإعادة البيع (PDF)"
 }

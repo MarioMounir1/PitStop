@@ -8,11 +8,11 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/currency_formatter.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/currency_formatter.dart';
 
 /// Generates A4 Resale Maintenance Reports in Arabic (RTL) or English (LTR)
-/// with optional Torq Free watermarking.
+/// with optional PitStop Free watermarking.
 class PdfService {
   static const PdfColor _navyDark = PdfColor.fromInt(0xFF0B0F17);
   static const PdfColor _navyCard = PdfColor.fromInt(0xFF141A26);
@@ -81,7 +81,7 @@ class PdfService {
 
     final pdf = pw.Document(
       title: '${vehicle.make} ${vehicle.model} (${vehicle.year}) - Resale Report',
-      author: 'Torq',
+      author: 'PitStop',
       theme: theme,
     );
 
@@ -219,7 +219,7 @@ class PdfService {
           child: pw.Opacity(
             opacity: 0.12,
             child: pw.Text(
-              'Generated with Torq Free',
+              'Generated with PitStop Free',
               style: pw.TextStyle(
                 fontSize: 38,
                 fontWeight: pw.FontWeight.bold,
@@ -260,8 +260,8 @@ class PdfService {
               pw.SizedBox(width: 8),
               pw.Text(
                 isArabic
-                    ? 'تورك — تقرير صيانة لإعادة البيع'
-                    : 'TORQ — Vehicle Resale Maintenance Report',
+                    ? 'بيت ستوب — تقرير صيانة لإعادة البيع'
+                    : 'PITSTOP — Vehicle Resale Maintenance Report',
                 style: pw.TextStyle(
                   fontSize: 12,
                   fontWeight: pw.FontWeight.bold,
@@ -300,8 +300,8 @@ class PdfService {
         children: [
           pw.Text(
             isPro
-                ? (isArabic ? 'تقرير موثّق عبر تورك برو' : 'Verified with Torq Pro')
-                : 'Generated with Torq Free',
+                ? (isArabic ? 'تقرير موثّق عبر بيت ستوب برو' : 'Verified with PitStop Pro')
+                : 'Generated with PitStop Free',
             style: const pw.TextStyle(fontSize: 8.5, color: _textSecondary),
           ),
           pw.Text(

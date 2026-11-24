@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/expenses/domain/repositories/expenses_repository.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/expenses/domain/repositories/expenses_repository.dart';
 
 /// Drift-backed implementation of [ExpensesRepository].
 class ExpensesRepositoryImpl implements ExpensesRepository {

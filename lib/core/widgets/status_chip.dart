@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:torq/core/theme/app_colors.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
 
 /// Semantic health status for maintenance items and vehicle documents.
 enum StatusChipType {

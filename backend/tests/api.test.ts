@@ -9,9 +9,9 @@ import {
   SyncTablesPayload,
   VehicleDto,
 } from '../src/schemas/models';
-import { TorqDataStore } from '../src/services/torqStore';
+import { PitStopDataStore } from '../src/services/pitstopStore';
 
-class InMemoryTorqStore implements TorqDataStore {
+class InMemoryPitStopStore implements PitStopDataStore {
   private readonly vehicles = new Map<string, Map<string, VehicleDto>>();
   private readonly maintenance = new Map<
     string,
@@ -144,8 +144,8 @@ class InMemoryTorqStore implements TorqDataStore {
   }
 }
 
-test('Torq Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)', async () => {
-  const store = new InMemoryTorqStore();
+test('PitStop Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)', async () => {
+  const store = new InMemoryPitStopStore();
   const app = createApp({
     store,
     enableLogging: false,
@@ -179,7 +179,7 @@ test('Torq Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)', as
       method: 'POST',
       headers: authHeaders,
       body: JSON.stringify({
-        app: 'torq',
+        app: 'pitstop',
         formatVersion: 1,
         tables: {
           vehicles: [

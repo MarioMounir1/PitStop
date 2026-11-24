@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:torq/core/database/tables/vehicles_table.dart';
+import 'package:pitstop/core/database/tables/vehicles_table.dart';
 
 class Expenses extends Table {
   TextColumn get id => text()();

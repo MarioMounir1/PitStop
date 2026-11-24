@@ -1,4 +1,4 @@
-package com.torq.torq
+package com.pitstop.pitstop
 
 import io.flutter.embedding.android.FlutterActivity
 

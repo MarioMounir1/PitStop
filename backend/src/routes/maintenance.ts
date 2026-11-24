@@ -5,9 +5,9 @@ import {
   maintenanceRecordSchema,
   maintenanceUpdateSchema,
 } from '../schemas/models';
-import { TorqDataStore } from '../services/torqStore';
+import { PitStopDataStore } from '../services/pitstopStore';
 
-export function createMaintenanceRouter(store: TorqDataStore): Router {
+export function createMaintenanceRouter(store: PitStopDataStore): Router {
   const router = Router();
 
   router.get('/', async (req: AuthenticatedRequest, res, next) => {

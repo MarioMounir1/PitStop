@@ -1,4 +1,4 @@
-import 'package:torq/core/database/app_database.dart';
+import 'package:pitstop/core/database/app_database.dart';
 
 /// Domain contract for managing vehicles in the user's garage.
 abstract class GarageRepository {

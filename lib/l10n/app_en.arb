@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "Torq",
+  "appName": "PitStop",
   "appTagline": "Car Maintenance, Fuel & Expense Tracker",
   "navDashboard": "Dashboard",
   "navMaintenance": "Maintenance",
@@ -53,7 +53,7 @@
   "emptyFuelSubtitle": "Record a fill-up to track fuel economy and monthly spend.",
   "emptyExpensesTitle": "No expenses yet",
   "emptyExpensesSubtitle": "Track insurance, washes, parking, tolls, and repairs in one place.",
-  "paywallTitle": "Torq Pro",
+  "paywallTitle": "PitStop Pro",
   "paywallSubtitle": "Unlock unlimited vehicles, clean resale PDFs, backups, and zero ads.",
   "paywallUnlimitedCars": "Unlimited Cars",
   "paywallCleanPdf": "Clean Resale PDF",
@@ -75,7 +75,7 @@
   "settingsDataBackup": "Data & Backup",
   "settingsExportBackup": "Export JSON Backup",
   "settingsRestoreBackup": "Restore JSON Backup",
-  "settingsUpgradePro": "Upgrade to Torq Pro",
-  "settingsProActive": "Torq Pro Active",
+  "settingsUpgradePro": "Upgrade to PitStop Pro",
+  "settingsProActive": "PitStop Pro Active",
   "exportResalePdf": "Export Resale Maintenance Report (PDF)"
 }

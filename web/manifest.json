@@ -1,6 +1,6 @@
 {
-    "name": "torq",
-    "short_name": "torq",
+    "name": "pitstop",
+    "short_name": "pitstop",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

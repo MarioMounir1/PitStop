@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:torq/core/services/monetization_service.dart';
-import 'package:torq/features/paywall/cubit/entitlement_state.dart';
+import 'package:pitstop/core/services/monetization_service.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_state.dart';
 
-/// Manages Torq Pro entitlement status, RevenueCat offerings, and purchases.
+/// Manages PitStop Pro entitlement status, RevenueCat offerings, and purchases.
 class EntitlementCubit extends Cubit<EntitlementState> {
   EntitlementCubit(this._monetizationService)
       : super(const EntitlementState());

@@ -1,5 +1,5 @@
-name: torq
-description: "Torq — Offline-first Car Maintenance, Fuel & Expense Tracker."
+name: pitstop
+description: "PitStop — Offline-first Car Maintenance, Fuel & Expense Tracker."
 publish_to: 'none'
 version: 1.0.0+1
 

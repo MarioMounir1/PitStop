@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.torq" "\0"
-            VALUE "FileDescription", "torq" "\0"
+            VALUE "CompanyName", "com.pitstop" "\0"
+            VALUE "FileDescription", "pitstop" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "torq" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.torq. All rights reserved." "\0"
-            VALUE "OriginalFilename", "torq.exe" "\0"
-            VALUE "ProductName", "torq" "\0"
+            VALUE "InternalName", "pitstop" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.pitstop. All rights reserved." "\0"
+            VALUE "OriginalFilename", "pitstop.exe" "\0"
+            VALUE "ProductName", "pitstop" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

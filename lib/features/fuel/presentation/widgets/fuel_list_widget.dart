@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/utils/currency_formatter.dart';
-import 'package:torq/core/widgets/empty_state_widget.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_bloc.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_event.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/utils/currency_formatter.dart';
+import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_bloc.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_event.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_state.dart';
 
 /// Displays fuel KPIs and fill-up cards with color-coded `km/L` badges.
 class FuelListWidget extends StatelessWidget {

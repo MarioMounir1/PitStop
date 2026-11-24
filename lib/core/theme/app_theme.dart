@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:torq/core/theme/app_colors.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
 
-/// Material 3 theme builder for Torq.
+/// Material 3 theme builder for PitStop.
 /// Automatically switches font family to `Cairo` for Arabic locales
 /// and `Plus Jakarta Sans` for English / other locales.
 abstract final class AppTheme {

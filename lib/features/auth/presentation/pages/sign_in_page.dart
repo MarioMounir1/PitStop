@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/features/auth/cubit/auth_cubit.dart';
-import 'package:torq/features/auth/cubit/auth_state.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/features/auth/cubit/auth_cubit.dart';
+import 'package:pitstop/features/auth/cubit/auth_state.dart';
 
 enum _AuthMode { signIn, signUp }
 
@@ -178,7 +178,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     const SizedBox(height: 14),
                     Text(
-                      isArabic ? 'تورك' : 'Torq',
+                      isArabic ? 'بيت ستوب' : 'PitStop',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.w800,

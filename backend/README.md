@@ -1,6 +1,6 @@
-# Torq Backend (Node.js + Firebase Firestore & Auth)
+# PitStop Backend (Node.js + Firebase Firestore & Auth)
 
-Express + TypeScript REST API backed by **Firebase Admin SDK (Cloud Firestore + Firebase Auth)** for Torq's cloud sync and multi-device persistence.
+Express + TypeScript REST API backed by **Firebase Admin SDK (Cloud Firestore + Firebase Auth)** for PitStop's cloud sync and multi-device persistence.
 
 ## Data Model (Firestore)
 

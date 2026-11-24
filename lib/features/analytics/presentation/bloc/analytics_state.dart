@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:torq/features/analytics/domain/models/analytics_models.dart';
+import 'package:pitstop/features/analytics/domain/models/analytics_models.dart';
 
 enum AnalyticsLoadStatus { initial, loading, loaded, failure }
 

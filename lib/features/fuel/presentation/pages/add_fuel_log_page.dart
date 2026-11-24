@@ -2,9 +2,9 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_bloc.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_event.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_bloc.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_event.dart';
 import 'package:uuid/uuid.dart';
 
 enum _FuelField { liters, pricePerLiter, totalCost }

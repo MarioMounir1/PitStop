@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:torq/core/services/backup_service.dart';
+import 'package:pitstop/core/services/backup_service.dart';
 
-/// Result returned after pushing local Drift data to the Torq Node.js + Firebase backend.
+/// Result returned after pushing local Drift data to the PitStop Node.js + Firebase backend.
 class CloudSyncResult {
   const CloudSyncResult({
     required this.syncedAt,
@@ -20,7 +20,7 @@ class CloudSyncResult {
   final int expensesCount;
 }
 
-/// Connects Torq's offline-first Drift database to the Node.js + Firebase backend
+/// Connects PitStop's offline-first Drift database to the Node.js + Firebase backend
 /// (`POST /api/sync/push` and `GET /api/sync/pull`).
 class CloudSyncService {
   CloudSyncService({
@@ -31,7 +31,7 @@ class CloudSyncService {
 
   /// Android emulator localhost alias (`10.0.2.2` maps to host `localhost:8080`).
   static const String defaultBaseUrl = String.fromEnvironment(
-    'TORQ_API_BASE_URL',
+    'PITSTOP_API_BASE_URL',
     defaultValue: 'http://10.0.2.2:8080',
   );
 

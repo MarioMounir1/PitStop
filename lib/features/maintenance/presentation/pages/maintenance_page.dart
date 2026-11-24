@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/constants/maintenance_presets.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/utils/currency_formatter.dart';
-import 'package:torq/core/utils/reminder_calculator.dart';
-import 'package:torq/core/widgets/empty_state_widget.dart';
-import 'package:torq/core/widgets/status_chip.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_bloc.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_event.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_state.dart';
-import 'package:torq/features/maintenance/presentation/pages/add_edit_maintenance_page.dart';
+import 'package:pitstop/core/constants/maintenance_presets.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/utils/currency_formatter.dart';
+import 'package:pitstop/core/utils/reminder_calculator.dart';
+import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/core/widgets/status_chip.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_bloc.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_event.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_state.dart';
+import 'package:pitstop/features/maintenance/presentation/pages/add_edit_maintenance_page.dart';
 
 /// Displays vehicle maintenance records with segmented filters, status chips,
 /// and quick-add preset chips.

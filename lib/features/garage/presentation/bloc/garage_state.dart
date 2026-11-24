@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:torq/core/database/app_database.dart';
+import 'package:pitstop/core/database/app_database.dart';
 
 enum GarageStatus { initial, loading, loaded, failure }
 

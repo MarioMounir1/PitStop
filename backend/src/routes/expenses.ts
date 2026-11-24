@@ -2,9 +2,9 @@ import { Router } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { HttpError } from '../middleware/errorHandler';
 import { expenseSchema, expenseUpdateSchema } from '../schemas/models';
-import { TorqDataStore } from '../services/torqStore';
+import { PitStopDataStore } from '../services/pitstopStore';
 
-export function createExpensesRouter(store: TorqDataStore): Router {
+export function createExpensesRouter(store: PitStopDataStore): Router {
   const router = Router();
 
   router.get('/', async (req: AuthenticatedRequest, res, next) => {

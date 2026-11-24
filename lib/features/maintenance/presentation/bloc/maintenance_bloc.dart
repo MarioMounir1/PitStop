@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/reminder_calculator.dart';
-import 'package:torq/features/maintenance/domain/repositories/maintenance_repository.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_event.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/reminder_calculator.dart';
+import 'package:pitstop/features/maintenance/domain/repositories/maintenance_repository.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_event.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_state.dart';
 
 /// BLoC managing maintenance history, per-category reminder statuses,
 /// and overdue / due-soon counts for the active vehicle.

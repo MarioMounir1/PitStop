@@ -6,14 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:torq/core/constants/maintenance_presets.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/utils/reminder_calculator.dart';
-import 'package:torq/core/widgets/pro_badge_widget.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_bloc.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_event.dart';
-import 'package:torq/features/maintenance/presentation/pages/maintenance_page.dart';
+import 'package:pitstop/core/constants/maintenance_presets.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/utils/reminder_calculator.dart';
+import 'package:pitstop/core/widgets/pro_badge_widget.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_bloc.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_event.dart';
+import 'package:pitstop/features/maintenance/presentation/pages/maintenance_page.dart';
 import 'package:uuid/uuid.dart';
 
 /// Form page for logging or editing a maintenance service record.

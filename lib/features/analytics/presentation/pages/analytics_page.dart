@@ -4,13 +4,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/utils/currency_formatter.dart';
-import 'package:torq/core/widgets/empty_state_widget.dart';
-import 'package:torq/features/analytics/domain/models/analytics_models.dart';
-import 'package:torq/features/analytics/presentation/bloc/analytics_bloc.dart';
-import 'package:torq/features/analytics/presentation/bloc/analytics_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/utils/currency_formatter.dart';
+import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/features/analytics/domain/models/analytics_models.dart';
+import 'package:pitstop/features/analytics/presentation/bloc/analytics_bloc.dart';
+import 'package:pitstop/features/analytics/presentation/bloc/analytics_state.dart';
 
 /// Analytics dashboard displaying spend KPIs, 6-month spend bar chart,
 /// fuel efficiency (`km/L`) line chart, and Resale Maintenance PDF export CTA.

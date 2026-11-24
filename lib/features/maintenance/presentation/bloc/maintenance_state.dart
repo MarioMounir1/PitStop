@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/utils/reminder_calculator.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/utils/reminder_calculator.dart';
 
 enum MaintenanceLoadStatus { initial, loading, loaded, failure }
 

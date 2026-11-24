@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/maintenance/domain/repositories/maintenance_repository.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/maintenance/domain/repositories/maintenance_repository.dart';
 
 /// Drift-backed implementation of [MaintenanceRepository] that automatically
 /// keeps `vehicle.currentOdometer` synced when a higher service odometer is logged.

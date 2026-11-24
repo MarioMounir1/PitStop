@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:torq/core/constants/maintenance_presets.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/core/services/backup_service.dart';
-import 'package:torq/core/services/pdf_service.dart';
-import 'package:torq/core/widgets/ad_banner_widget.dart';
-import 'package:torq/features/analytics/presentation/pages/analytics_page.dart';
-import 'package:torq/features/auth/presentation/pages/sign_in_page.dart';
-import 'package:torq/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:torq/features/expenses/presentation/pages/add_expense_page.dart';
-import 'package:torq/features/expenses/presentation/pages/fuel_and_expenses_page.dart';
-import 'package:torq/features/fuel/presentation/bloc/fuel_bloc.dart';
-import 'package:torq/features/fuel/presentation/pages/add_fuel_log_page.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_bloc.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_event.dart';
-import 'package:torq/features/garage/presentation/pages/add_edit_vehicle_page.dart';
-import 'package:torq/features/garage/presentation/pages/garage_page.dart';
-import 'package:torq/features/maintenance/presentation/bloc/maintenance_bloc.dart';
-import 'package:torq/features/maintenance/presentation/pages/add_edit_maintenance_page.dart';
-import 'package:torq/features/maintenance/presentation/pages/maintenance_page.dart';
-import 'package:torq/features/paywall/cubit/entitlement_cubit.dart';
-import 'package:torq/features/paywall/presentation/paywall_sheet.dart';
-import 'package:torq/features/settings/cubit/settings_cubit.dart';
-import 'package:torq/features/settings/presentation/settings_page.dart';
-import 'package:torq/injection_container.dart';
-import 'package:torq/l10n/app_localizations.dart';
+import 'package:pitstop/core/constants/maintenance_presets.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/services/backup_service.dart';
+import 'package:pitstop/core/services/pdf_service.dart';
+import 'package:pitstop/core/widgets/ad_banner_widget.dart';
+import 'package:pitstop/features/analytics/presentation/pages/analytics_page.dart';
+import 'package:pitstop/features/auth/presentation/pages/sign_in_page.dart';
+import 'package:pitstop/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:pitstop/features/expenses/presentation/pages/add_expense_page.dart';
+import 'package:pitstop/features/expenses/presentation/pages/fuel_and_expenses_page.dart';
+import 'package:pitstop/features/fuel/presentation/bloc/fuel_bloc.dart';
+import 'package:pitstop/features/fuel/presentation/pages/add_fuel_log_page.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_bloc.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_event.dart';
+import 'package:pitstop/features/garage/presentation/pages/add_edit_vehicle_page.dart';
+import 'package:pitstop/features/garage/presentation/pages/garage_page.dart';
+import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_bloc.dart';
+import 'package:pitstop/features/maintenance/presentation/pages/add_edit_maintenance_page.dart';
+import 'package:pitstop/features/maintenance/presentation/pages/maintenance_page.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_cubit.dart';
+import 'package:pitstop/features/paywall/presentation/paywall_sheet.dart';
+import 'package:pitstop/features/settings/cubit/settings_cubit.dart';
+import 'package:pitstop/features/settings/presentation/settings_page.dart';
+import 'package:pitstop/injection_container.dart';
+import 'package:pitstop/l10n/app_localizations.dart';
 
 /// Builds the application's [GoRouter] with a 4-tab [StatefulShellRoute]
 /// and all feature sub-routes.
@@ -35,7 +35,7 @@ GoRouter createAppRouter() {
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return _TorqNavigationShell(navigationShell: navigationShell);
+          return _PitStopNavigationShell(navigationShell: navigationShell);
         },
         branches: [
           // Tab 1: Dashboard
@@ -185,8 +185,8 @@ GoRouter createAppRouter() {
   );
 }
 
-class _TorqNavigationShell extends StatelessWidget {
-  const _TorqNavigationShell({required this.navigationShell});
+class _PitStopNavigationShell extends StatelessWidget {
+  const _PitStopNavigationShell({required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
@@ -267,7 +267,7 @@ class _AnalyticsTabWrapperState extends State<_AnalyticsTabWrapper> {
       );
 
       final safeName =
-          'torq_resale_${vehicle.make}_${vehicle.model}_${vehicle.year}.pdf'
+          'pitstop_resale_${vehicle.make}_${vehicle.model}_${vehicle.year}.pdf'
               .replaceAll(RegExp(r'\s+'), '_')
               .toLowerCase();
 

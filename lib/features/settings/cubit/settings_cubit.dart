@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:torq/features/settings/cubit/settings_state.dart';
+import 'package:pitstop/features/settings/cubit/settings_state.dart';
 
 /// Persists user preferences (locale, theme, distance unit, currency) in
 /// [SharedPreferences].
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit(this._prefs) : super(_readInitialState(_prefs));
 
-  static const String _keyLocale = 'torq_settings_locale';
-  static const String _keyThemeMode = 'torq_settings_theme_mode';
-  static const String _keyDistanceUnit = 'torq_settings_distance_unit';
-  static const String _keyCurrencyCode = 'torq_settings_currency_code';
+  static const String _keyLocale = 'pitstop_settings_locale';
+  static const String _keyThemeMode = 'pitstop_settings_theme_mode';
+  static const String _keyDistanceUnit = 'pitstop_settings_distance_unit';
+  static const String _keyCurrencyCode = 'pitstop_settings_currency_code';
 
   static const List<String> supportedDistanceUnits = ['km', 'mi'];
   static const List<String> supportedCurrencies = ['EGP', 'SAR', 'AED', 'USD'];

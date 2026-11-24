@@ -6,7 +6,7 @@ export function createHealthRouter(): Router {
   router.get('/', (_req, res) => {
     res.json({
       status: 'ok',
-      service: 'torq-backend',
+      service: 'pitstop-backend',
       database: 'firebase-firestore',
       timestamp: new Date().toISOString(),
     });

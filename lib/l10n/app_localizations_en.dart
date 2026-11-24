@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Torq';
+  String get appName => 'PitStop';
 
   @override
   String get appTagline => 'Car Maintenance, Fuel & Expense Tracker';
@@ -172,7 +172,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Track insurance, washes, parking, tolls, and repairs in one place.';
 
   @override
-  String get paywallTitle => 'Torq Pro';
+  String get paywallTitle => 'PitStop Pro';
 
   @override
   String get paywallSubtitle =>
@@ -239,10 +239,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsRestoreBackup => 'Restore JSON Backup';
 
   @override
-  String get settingsUpgradePro => 'Upgrade to Torq Pro';
+  String get settingsUpgradePro => 'Upgrade to PitStop Pro';
 
   @override
-  String get settingsProActive => 'Torq Pro Active';
+  String get settingsProActive => 'PitStop Pro Active';
 
   @override
   String get exportResalePdf => 'Export Resale Maintenance Report (PDF)';

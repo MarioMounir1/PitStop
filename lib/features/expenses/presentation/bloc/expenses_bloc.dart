@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/expenses/domain/repositories/expenses_repository.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_event.dart';
-import 'package:torq/features/expenses/presentation/bloc/expenses_state.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/expenses/domain/repositories/expenses_repository.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_event.dart';
+import 'package:pitstop/features/expenses/presentation/bloc/expenses_state.dart';
 
 /// BLoC managing general vehicle expenses and monthly totals.
 class ExpensesBloc extends Bloc<ExpensesEvent, ExpensesState> {

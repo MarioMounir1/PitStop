@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'تورك';
+  String get appName => 'بيت ستوب';
 
   @override
   String get appTagline => 'متابعة صيانة السيارة والوقود والمصاريف';
@@ -172,7 +172,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تابع التأمين والغسيل والركن والرسوم والإصلاحات في مكان واحد.';
 
   @override
-  String get paywallTitle => 'تورك برو';
+  String get paywallTitle => 'بيت ستوب برو';
 
   @override
   String get paywallSubtitle =>
@@ -239,10 +239,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsRestoreBackup => 'استعادة من نسخة احتياطية (JSON)';
 
   @override
-  String get settingsUpgradePro => 'ترقية إلى تورك برو';
+  String get settingsUpgradePro => 'ترقية إلى بيت ستوب برو';
 
   @override
-  String get settingsProActive => 'تورك برو مفعّل';
+  String get settingsProActive => 'بيت ستوب برو مفعّل';
 
   @override
   String get exportResalePdf => 'تصدير تقرير صيانة لإعادة البيع (PDF)';

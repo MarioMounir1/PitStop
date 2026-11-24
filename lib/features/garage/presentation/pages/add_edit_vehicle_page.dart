@@ -2,9 +2,9 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torq/core/database/app_database.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_bloc.dart';
-import 'package:torq/features/garage/presentation/bloc/garage_event.dart';
+import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_bloc.dart';
+import 'package:pitstop/features/garage/presentation/bloc/garage_event.dart';
 import 'package:uuid/uuid.dart';
 
 /// Form page for adding a new vehicle or editing an existing one.

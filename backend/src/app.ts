@@ -10,17 +10,17 @@ import { createHealthRouter } from './routes/health';
 import { createMaintenanceRouter } from './routes/maintenance';
 import { createSyncRouter } from './routes/sync';
 import { createVehiclesRouter } from './routes/vehicles';
-import { FirestoreTorqStore, TorqDataStore } from './services/torqStore';
+import { FirestorePitStopStore, PitStopDataStore } from './services/pitstopStore';
 
 export interface CreateAppOptions {
-  store?: TorqDataStore;
+  store?: PitStopDataStore;
   tokenVerifier?: TokenVerifier;
   enableLogging?: boolean;
 }
 
 export function createApp(options: CreateAppOptions = {}): Express {
   const app = express();
-  const store = options.store ?? new FirestoreTorqStore();
+  const store = options.store ?? new FirestorePitStopStore();
   const requireAuth = createAuthMiddleware(options.tokenVerifier);
 
   app.use(helmet());

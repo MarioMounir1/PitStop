@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { syncPushPayloadSchema } from '../schemas/models';
-import { TorqDataStore } from '../services/torqStore';
+import { PitStopDataStore } from '../services/pitstopStore';
 
 /**
- * Offline-first sync endpoints matching Torq's `BackupService` JSON contract:
+ * Offline-first sync endpoints matching PitStop's `BackupService` JSON contract:
  * - `POST /api/sync/push` — uploads local Drift tables to Firestore.
  * - `GET  /api/sync/pull` — downloads full user snapshot for Drift restore.
  */
-export function createSyncRouter(store: TorqDataStore): Router {
+export function createSyncRouter(store: PitStopDataStore): Router {
   const router = Router();
 
   router.post('/push', async (req: AuthenticatedRequest, res, next) => {
@@ -29,7 +29,7 @@ export function createSyncRouter(store: TorqDataStore): Router {
     try {
       const tables = await store.pullAll(req.uid!);
       res.json({
-        app: 'torq',
+        app: 'pitstop',
         formatVersion: 1,
         schemaVersion: 1,
         exportedAt: new Date().toISOString(),

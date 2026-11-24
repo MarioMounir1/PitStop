@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:torq/core/services/monetization_service.dart';
-import 'package:torq/features/paywall/cubit/entitlement_cubit.dart';
-import 'package:torq/features/paywall/cubit/entitlement_state.dart';
+import 'package:pitstop/core/services/monetization_service.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_cubit.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_state.dart';
 
 /// Displays an AdMob banner ad for Free users and automatically collapses
 /// to [SizedBox.shrink] whenever `EntitlementCubit.state.isPro == true`.

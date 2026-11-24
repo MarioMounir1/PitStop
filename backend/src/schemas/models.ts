@@ -75,7 +75,7 @@ export const expenseSchema = z.object({
 export const expenseUpdateSchema = expenseSchema.partial().omit({ id: true });
 
 export const syncPushPayloadSchema = z.object({
-  app: z.literal('torq').optional(),
+  app: z.literal('pitstop').optional(),
   formatVersion: z.number().int().optional(),
   schemaVersion: z.number().int().optional(),
   exportedAt: z.string().optional(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:torq/core/theme/app_colors.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
 
-/// Compact badge highlighting Torq Pro features.
+/// Compact badge highlighting PitStop Pro features.
 class ProBadgeWidget extends StatelessWidget {
   const ProBadgeWidget({
     this.label = 'PRO',

@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-/// Locale-aware currency formatting utility for Torq.
+/// Locale-aware currency formatting utility for PitStop.
 abstract final class CurrencyFormatter {
   static const Map<String, String> _symbols = <String, String>{
     'EGP': 'EGP',

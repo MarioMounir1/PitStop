@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:torq/core/database/app_database.dart';
+import 'package:pitstop/core/database/app_database.dart';
 
 /// Result summary returned after a successful JSON backup restore.
 class BackupRestoreSummary {
@@ -21,7 +21,7 @@ class BackupRestoreSummary {
   final int expensesCount;
 }
 
-/// Exports and restores all Torq Drift tables as a versioned JSON archive.
+/// Exports and restores all PitStop Drift tables as a versioned JSON archive.
 class BackupService {
   BackupService(this._db);
 
@@ -37,7 +37,7 @@ class BackupService {
     final expenses = await _db.select(_db.expenses).get();
 
     final payload = <String, dynamic>{
-      'app': 'torq',
+      'app': 'pitstop',
       'formatVersion': currentBackupFormatVersion,
       'schemaVersion': _db.schemaVersion,
       'exportedAt': DateTime.now().toUtc().toIso8601String(),
@@ -62,14 +62,14 @@ class BackupService {
         .split('.')
         .first;
     final file = File(
-      '${tempDir.path}${Platform.pathSeparator}torq_backup_$timestamp.json',
+      '${tempDir.path}${Platform.pathSeparator}pitstop_backup_$timestamp.json',
     );
     await file.writeAsString(jsonString, flush: true);
 
     await SharePlus.instance.share(
       ShareParams(
         files: [XFile(file.path, mimeType: 'application/json')],
-        subject: 'Torq Backup ($timestamp)',
+        subject: 'PitStop Backup ($timestamp)',
       ),
     );
 
@@ -87,7 +87,7 @@ class BackupService {
   Future<BackupRestoreSummary> restoreFromJsonString(String jsonContent) async {
     final dynamic decoded = jsonDecode(jsonContent);
     if (decoded is! Map<String, dynamic>) {
-      throw const FormatException('Invalid Torq backup file format.');
+      throw const FormatException('Invalid PitStop backup file format.');
     }
 
     final tables = decoded['tables'];

@@ -5,13 +5,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
-/// Local notification scheduler for Torq maintenance and document reminders.
+/// Local notification scheduler for PitStop maintenance and document reminders.
 class NotificationService {
   NotificationService({
     FlutterLocalNotificationsPlugin? plugin,
   }) : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
-  static const String _channelId = 'torq_reminders';
+  static const String _channelId = 'pitstop_reminders';
   static const String _channelName = 'Maintenance Reminders';
   static const String _channelDescription =
       'Scheduled reminders for vehicle maintenance, license, and insurance.';

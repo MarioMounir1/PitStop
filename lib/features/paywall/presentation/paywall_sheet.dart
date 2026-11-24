@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:torq/core/theme/app_colors.dart';
-import 'package:torq/core/widgets/pro_badge_widget.dart';
-import 'package:torq/features/paywall/cubit/entitlement_cubit.dart';
-import 'package:torq/features/paywall/cubit/entitlement_state.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/widgets/pro_badge_widget.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_cubit.dart';
+import 'package:pitstop/features/paywall/cubit/entitlement_state.dart';
 
 enum _PaywallPlan { monthly, yearly, lifetime }
 
-/// Dark glassmorphic Material 3 paywall comparing Torq Free vs Pro.
+/// Dark glassmorphic Material 3 paywall comparing PitStop Free vs Pro.
 class PaywallSheet extends StatefulWidget {
   const PaywallSheet({super.key});
 
@@ -154,7 +154,7 @@ class _PaywallSheetState extends State<PaywallSheet> {
                             const ProBadgeWidget(),
                             const SizedBox(width: 10),
                             Text(
-                              isArabic ? 'تورك برو' : 'Torq Pro',
+                              isArabic ? 'بيت ستوب برو' : 'PitStop Pro',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
@@ -241,8 +241,8 @@ class _PaywallSheetState extends State<PaywallSheet> {
                             )
                           : Text(
                               isArabic
-                                  ? 'الترقية إلى تورك برو'
-                                  : 'Continue with Torq Pro',
+                                  ? 'الترقية إلى بيت ستوب برو'
+                                  : 'Continue with PitStop Pro',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 16,

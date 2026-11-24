@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Torq color tokens for both the signature Dark Automotive M3 palette
+/// PitStop color tokens for both the signature Dark Automotive M3 palette
 /// and the clean Light palette.
 abstract final class AppColors {
   // Brand & Semantic Colors (shared)

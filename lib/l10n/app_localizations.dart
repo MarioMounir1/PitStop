@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Torq'**
+  /// **'PitStop'**
   String get appName;
 
   /// No description provided for @appTagline.
@@ -419,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:
-  /// **'Torq Pro'**
+  /// **'PitStop Pro'**
   String get paywallTitle;
 
   /// No description provided for @paywallSubtitle.
@@ -551,13 +551,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsUpgradePro.
   ///
   /// In en, this message translates to:
-  /// **'Upgrade to Torq Pro'**
+  /// **'Upgrade to PitStop Pro'**
   String get settingsUpgradePro;
 
   /// No description provided for @settingsProActive.
   ///
   /// In en, this message translates to:
-  /// **'Torq Pro Active'**
+  /// **'PitStop Pro Active'**
   String get settingsProActive;
 
   /// No description provided for @exportResalePdf.

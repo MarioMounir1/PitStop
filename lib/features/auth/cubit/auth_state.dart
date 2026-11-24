@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:torq/core/services/auth_service.dart';
+import 'package:pitstop/core/services/auth_service.dart';
 
 class AuthState extends Equatable {
   const AuthState({
