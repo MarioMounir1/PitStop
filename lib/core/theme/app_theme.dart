@@ -19,15 +19,15 @@ abstract final class AppTheme {
     final fontFamily = fontFamilyForLocale(locale);
     const colorScheme = ColorScheme.dark(
       primary: AppColors.primary,
-      onPrimary: Colors.white,
-      primaryContainer: Color(0xFF1D3B6E),
-      onPrimaryContainer: Color(0xFFDBEAFE),
+      onPrimary: AppColors.onPrimary,
+      primaryContainer: AppColors.dueSoonSurfaceDark,
+      onPrimaryContainer: AppColors.dueSoon,
       secondary: AppColors.ok,
       onSecondary: Color(0xFF042F2E),
-      secondaryContainer: Color(0xFF064E3B),
-      onSecondaryContainer: Color(0xFFD1FAE5),
+      secondaryContainer: AppColors.okSurfaceDark,
+      onSecondaryContainer: AppColors.ok,
       tertiary: AppColors.dueSoon,
-      onTertiary: Color(0xFF451A03),
+      onTertiary: AppColors.onPrimary,
       error: AppColors.overdue,
       onError: Colors.white,
       surface: AppColors.darkCard,
@@ -37,9 +37,9 @@ abstract final class AppTheme {
       surfaceContainerLow: AppColors.darkCard,
       surfaceContainer: AppColors.darkElevated,
       surfaceContainerHigh: AppColors.darkElevated,
-      surfaceContainerHighest: Color(0xFF253047),
+      surfaceContainerHighest: Color(0xFF252C3B),
       outline: AppColors.darkBorder,
-      outlineVariant: Color(0xFF1E293B),
+      outlineVariant: Color(0xFF1A1F2A),
     );
 
     return _buildTheme(
@@ -53,16 +53,16 @@ abstract final class AppTheme {
     final fontFamily = fontFamilyForLocale(locale);
     const colorScheme = ColorScheme.light(
       primary: AppColors.primary,
-      onPrimary: Colors.white,
-      primaryContainer: Color(0xFFDBEAFE),
-      onPrimaryContainer: Color(0xFF1E3A8A),
-      secondary: AppColors.ok,
+      onPrimary: AppColors.onPrimary,
+      primaryContainer: Color(0xFFFEF3C7),
+      onPrimaryContainer: Color(0xFF78350F),
+      secondary: Color(0xFF059669),
       onSecondary: Colors.white,
       secondaryContainer: Color(0xFFD1FAE5),
       onSecondaryContainer: Color(0xFF064E3B),
-      tertiary: AppColors.dueSoon,
+      tertiary: Color(0xFFD97706),
       onTertiary: Colors.white,
-      error: AppColors.overdue,
+      error: Color(0xFFDC2626),
       onError: Colors.white,
       surface: AppColors.lightCard,
       onSurface: AppColors.lightTextPrimary,
@@ -88,7 +88,8 @@ abstract final class AppTheme {
     required AppColorExtension palette,
     required String fontFamily,
   }) {
-    final baseTextTheme = colorScheme.brightness == Brightness.dark
+    final isDark = colorScheme.brightness == Brightness.dark;
+    final baseTextTheme = isDark
         ? Typography.material2021().white
         : Typography.material2021().black;
 
@@ -112,9 +113,11 @@ abstract final class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: textTheme.titleLarge?.copyWith(
+        titleTextStyle: textTheme.headlineMedium?.copyWith(
           fontFamily: fontFamily,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w800,
+          fontSize: 28,
+          letterSpacing: -0.5,
           color: palette.textPrimary,
         ),
       ),
@@ -123,7 +126,7 @@ abstract final class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           side: BorderSide(color: palette.border),
         ),
       ),
@@ -134,26 +137,26 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: palette.elevated,
+        fillColor: palette.inputFill,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 14,
+          vertical: 15,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: palette.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: palette.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.overdue),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: palette.overdue),
         ),
         labelStyle: TextStyle(color: palette.textSecondary),
         hintStyle: TextStyle(color: palette.textMuted),
@@ -161,60 +164,62 @@ abstract final class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size(0, 48),
+          foregroundColor: AppColors.onPrimary,
+          minimumSize: const Size(0, 52),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: TextStyle(
             fontFamily: fontFamily,
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
           ),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.onPrimary,
           elevation: 0,
-          minimumSize: const Size(0, 48),
+          minimumSize: const Size(0, 52),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: TextStyle(
             fontFamily: fontFamily,
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
+          backgroundColor: palette.elevated,
           foregroundColor: palette.textPrimary,
           side: BorderSide(color: palette.border),
-          minimumSize: const Size(0, 48),
+          minimumSize: const Size(0, 52),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: TextStyle(
             fontFamily: fontFamily,
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
           ),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.onPrimary,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: palette.card,
-        indicatorColor: AppColors.primary.withValues(alpha: 0.16),
+        height: 68,
+        backgroundColor: isDark ? AppColors.darkInput : palette.card,
+        indicatorColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final isSelected = states.contains(WidgetState.selected);
@@ -228,6 +233,7 @@ abstract final class AppTheme {
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final isSelected = states.contains(WidgetState.selected);
           return IconThemeData(
+            size: 24,
             color: isSelected ? AppColors.primary : palette.textSecondary,
           );
         }),
@@ -260,7 +266,7 @@ abstract final class AppTheme {
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           side: BorderSide(color: palette.border),
         ),
       ),

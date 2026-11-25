@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pitstop/core/database/app_database.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
@@ -70,11 +71,25 @@ class VehicleSwitcherSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  isArabic ? 'اختر السيارة' : 'Switch Vehicle',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isArabic ? 'اختر السيارة' : 'Switch Vehicle',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        final router = GoRouter.maybeOf(context);
+                        Navigator.of(context).pop();
+                        router?.push('/garage');
+                      },
+                      child: Text(isArabic ? 'إدارة الجراج' : 'Manage Garage'),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 14),
                 Flexible(

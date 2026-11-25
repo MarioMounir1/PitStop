@@ -163,6 +163,7 @@ class BackupService {
         'make': v.make,
         'model': v.model,
         'year': v.year,
+        'color': v.color,
         'plateNumber': v.plateNumber,
         'currentOdometer': v.currentOdometer,
         'distanceUnit': v.distanceUnit,
@@ -170,6 +171,7 @@ class BackupService {
         'fuelType': v.fuelType,
         'licenseExpiryDate': v.licenseExpiryDate?.toIso8601String(),
         'insuranceExpiryDate': v.insuranceExpiryDate?.toIso8601String(),
+        'carViewsJson': v.carViewsJson,
         'isActive': v.isActive,
         'createdAt': v.createdAt.toIso8601String(),
       };
@@ -180,6 +182,7 @@ class BackupService {
         make: m['make'] as String,
         model: m['model'] as String,
         year: (m['year'] as num).toInt(),
+        color: Value((m['color'] as String?) ?? 'White'),
         plateNumber: Value(m['plateNumber'] as String?),
         currentOdometer: Value((m['currentOdometer'] as num?)?.toInt() ?? 0),
         distanceUnit: Value((m['distanceUnit'] as String?) ?? 'km'),
@@ -189,6 +192,7 @@ class BackupService {
         insuranceExpiryDate: Value(
           _parseNullableDate(m['insuranceExpiryDate']),
         ),
+        carViewsJson: Value(m['carViewsJson'] as String?),
         isActive: Value((m['isActive'] as bool?) ?? false),
         createdAt: Value(_parseNullableDate(m['createdAt']) ?? DateTime.now()),
       );

@@ -5,6 +5,7 @@ import 'package:pitstop/core/constants/maintenance_presets.dart';
 import 'package:pitstop/core/database/app_database.dart';
 import 'package:pitstop/core/services/backup_service.dart';
 import 'package:pitstop/core/services/pdf_service.dart';
+import 'package:pitstop/core/theme/app_colors.dart';
 import 'package:pitstop/core/widgets/ad_banner_widget.dart';
 import 'package:pitstop/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:pitstop/features/auth/presentation/pages/sign_in_page.dart';
@@ -196,42 +197,49 @@ class _PitStopNavigationShell extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Center(child: AdBannerWidget()),
-          NavigationBar(
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: (index) {
-              navigationShell.goBranch(
-                index,
-                initialLocation: index == navigationShell.currentIndex,
-              );
-            },
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.dashboard_outlined),
-                selectedIcon: const Icon(Icons.dashboard_rounded),
-                label: l10n.navDashboard,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.build_outlined),
-                selectedIcon: const Icon(Icons.build_rounded),
-                label: l10n.navMaintenance,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.local_gas_station_outlined),
-                selectedIcon: const Icon(Icons.local_gas_station_rounded),
-                label: l10n.navFuelAndCosts,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.insights_outlined),
-                selectedIcon: const Icon(Icons.insights_rounded),
-                label: l10n.navAnalytics,
-              ),
-            ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: context.appColors.border, width: 1),
           ),
-        ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Center(child: AdBannerWidget()),
+            NavigationBar(
+              selectedIndex: navigationShell.currentIndex,
+              onDestinationSelected: (index) {
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.home_outlined),
+                  selectedIcon: const Icon(Icons.home_outlined),
+                  label: l10n.navDashboard,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.build_outlined),
+                  selectedIcon: const Icon(Icons.build_rounded),
+                  label: l10n.navMaintenance,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.local_gas_station_outlined),
+                  selectedIcon: const Icon(Icons.local_gas_station_outlined),
+                  label: l10n.navFuelAndCosts,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.bar_chart_rounded),
+                  selectedIcon: const Icon(Icons.bar_chart_rounded),
+                  label: l10n.navAnalytics,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

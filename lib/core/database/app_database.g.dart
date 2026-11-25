@@ -44,6 +44,16 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('White'),
+  );
   static const VerificationMeta _plateNumberMeta = const VerificationMeta(
     'plateNumber',
   );
@@ -126,6 +136,17 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
         type: DriftSqlType.dateTime,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _carViewsJsonMeta = const VerificationMeta(
+    'carViewsJson',
+  );
+  @override
+  late final GeneratedColumn<String> carViewsJson = GeneratedColumn<String>(
+    'car_views_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isActiveMeta = const VerificationMeta(
     'isActive',
   );
@@ -159,6 +180,7 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
     make,
     model,
     year,
+    color,
     plateNumber,
     currentOdometer,
     distanceUnit,
@@ -166,6 +188,7 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
     fuelType,
     licenseExpiryDate,
     insuranceExpiryDate,
+    carViewsJson,
     isActive,
     createdAt,
   ];
@@ -209,6 +232,12 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
       );
     } else if (isInserting) {
       context.missing(_yearMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
     }
     if (data.containsKey('plate_number')) {
       context.handle(
@@ -270,6 +299,15 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
         ),
       );
     }
+    if (data.containsKey('car_views_json')) {
+      context.handle(
+        _carViewsJsonMeta,
+        carViewsJson.isAcceptableOrUnknown(
+          data['car_views_json']!,
+          _carViewsJsonMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_active')) {
       context.handle(
         _isActiveMeta,
@@ -307,6 +345,10 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
         DriftSqlType.int,
         data['${effectivePrefix}year'],
       )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      )!,
       plateNumber: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}plate_number'],
@@ -335,6 +377,10 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}insurance_expiry_date'],
       ),
+      carViewsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}car_views_json'],
+      ),
       isActive: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_active'],
@@ -357,6 +403,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
   final String make;
   final String model;
   final int year;
+  final String color;
   final String? plateNumber;
   final int currentOdometer;
   final String distanceUnit;
@@ -364,6 +411,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
   final String fuelType;
   final DateTime? licenseExpiryDate;
   final DateTime? insuranceExpiryDate;
+  final String? carViewsJson;
   final bool isActive;
   final DateTime createdAt;
   const Vehicle({
@@ -371,6 +419,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     required this.make,
     required this.model,
     required this.year,
+    required this.color,
     this.plateNumber,
     required this.currentOdometer,
     required this.distanceUnit,
@@ -378,6 +427,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     required this.fuelType,
     this.licenseExpiryDate,
     this.insuranceExpiryDate,
+    this.carViewsJson,
     required this.isActive,
     required this.createdAt,
   });
@@ -388,6 +438,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     map['make'] = Variable<String>(make);
     map['model'] = Variable<String>(model);
     map['year'] = Variable<int>(year);
+    map['color'] = Variable<String>(color);
     if (!nullToAbsent || plateNumber != null) {
       map['plate_number'] = Variable<String>(plateNumber);
     }
@@ -401,6 +452,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     if (!nullToAbsent || insuranceExpiryDate != null) {
       map['insurance_expiry_date'] = Variable<DateTime>(insuranceExpiryDate);
     }
+    if (!nullToAbsent || carViewsJson != null) {
+      map['car_views_json'] = Variable<String>(carViewsJson);
+    }
     map['is_active'] = Variable<bool>(isActive);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -412,6 +466,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       make: Value(make),
       model: Value(model),
       year: Value(year),
+      color: Value(color),
       plateNumber: plateNumber == null && nullToAbsent
           ? const Value.absent()
           : Value(plateNumber),
@@ -425,6 +480,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       insuranceExpiryDate: insuranceExpiryDate == null && nullToAbsent
           ? const Value.absent()
           : Value(insuranceExpiryDate),
+      carViewsJson: carViewsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(carViewsJson),
       isActive: Value(isActive),
       createdAt: Value(createdAt),
     );
@@ -440,6 +498,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       make: serializer.fromJson<String>(json['make']),
       model: serializer.fromJson<String>(json['model']),
       year: serializer.fromJson<int>(json['year']),
+      color: serializer.fromJson<String>(json['color']),
       plateNumber: serializer.fromJson<String?>(json['plateNumber']),
       currentOdometer: serializer.fromJson<int>(json['currentOdometer']),
       distanceUnit: serializer.fromJson<String>(json['distanceUnit']),
@@ -451,6 +510,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       insuranceExpiryDate: serializer.fromJson<DateTime?>(
         json['insuranceExpiryDate'],
       ),
+      carViewsJson: serializer.fromJson<String?>(json['carViewsJson']),
       isActive: serializer.fromJson<bool>(json['isActive']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -463,6 +523,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       'make': serializer.toJson<String>(make),
       'model': serializer.toJson<String>(model),
       'year': serializer.toJson<int>(year),
+      'color': serializer.toJson<String>(color),
       'plateNumber': serializer.toJson<String?>(plateNumber),
       'currentOdometer': serializer.toJson<int>(currentOdometer),
       'distanceUnit': serializer.toJson<String>(distanceUnit),
@@ -470,6 +531,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       'fuelType': serializer.toJson<String>(fuelType),
       'licenseExpiryDate': serializer.toJson<DateTime?>(licenseExpiryDate),
       'insuranceExpiryDate': serializer.toJson<DateTime?>(insuranceExpiryDate),
+      'carViewsJson': serializer.toJson<String?>(carViewsJson),
       'isActive': serializer.toJson<bool>(isActive),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -480,6 +542,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     String? make,
     String? model,
     int? year,
+    String? color,
     Value<String?> plateNumber = const Value.absent(),
     int? currentOdometer,
     String? distanceUnit,
@@ -487,6 +550,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     String? fuelType,
     Value<DateTime?> licenseExpiryDate = const Value.absent(),
     Value<DateTime?> insuranceExpiryDate = const Value.absent(),
+    Value<String?> carViewsJson = const Value.absent(),
     bool? isActive,
     DateTime? createdAt,
   }) => Vehicle(
@@ -494,6 +558,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     make: make ?? this.make,
     model: model ?? this.model,
     year: year ?? this.year,
+    color: color ?? this.color,
     plateNumber: plateNumber.present ? plateNumber.value : this.plateNumber,
     currentOdometer: currentOdometer ?? this.currentOdometer,
     distanceUnit: distanceUnit ?? this.distanceUnit,
@@ -505,6 +570,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     insuranceExpiryDate: insuranceExpiryDate.present
         ? insuranceExpiryDate.value
         : this.insuranceExpiryDate,
+    carViewsJson: carViewsJson.present ? carViewsJson.value : this.carViewsJson,
     isActive: isActive ?? this.isActive,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -514,6 +580,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       make: data.make.present ? data.make.value : this.make,
       model: data.model.present ? data.model.value : this.model,
       year: data.year.present ? data.year.value : this.year,
+      color: data.color.present ? data.color.value : this.color,
       plateNumber: data.plateNumber.present
           ? data.plateNumber.value
           : this.plateNumber,
@@ -533,6 +600,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       insuranceExpiryDate: data.insuranceExpiryDate.present
           ? data.insuranceExpiryDate.value
           : this.insuranceExpiryDate,
+      carViewsJson: data.carViewsJson.present
+          ? data.carViewsJson.value
+          : this.carViewsJson,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -545,6 +615,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
           ..write('make: $make, ')
           ..write('model: $model, ')
           ..write('year: $year, ')
+          ..write('color: $color, ')
           ..write('plateNumber: $plateNumber, ')
           ..write('currentOdometer: $currentOdometer, ')
           ..write('distanceUnit: $distanceUnit, ')
@@ -552,6 +623,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
           ..write('fuelType: $fuelType, ')
           ..write('licenseExpiryDate: $licenseExpiryDate, ')
           ..write('insuranceExpiryDate: $insuranceExpiryDate, ')
+          ..write('carViewsJson: $carViewsJson, ')
           ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -564,6 +636,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     make,
     model,
     year,
+    color,
     plateNumber,
     currentOdometer,
     distanceUnit,
@@ -571,6 +644,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     fuelType,
     licenseExpiryDate,
     insuranceExpiryDate,
+    carViewsJson,
     isActive,
     createdAt,
   );
@@ -582,6 +656,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
           other.make == this.make &&
           other.model == this.model &&
           other.year == this.year &&
+          other.color == this.color &&
           other.plateNumber == this.plateNumber &&
           other.currentOdometer == this.currentOdometer &&
           other.distanceUnit == this.distanceUnit &&
@@ -589,6 +664,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
           other.fuelType == this.fuelType &&
           other.licenseExpiryDate == this.licenseExpiryDate &&
           other.insuranceExpiryDate == this.insuranceExpiryDate &&
+          other.carViewsJson == this.carViewsJson &&
           other.isActive == this.isActive &&
           other.createdAt == this.createdAt);
 }
@@ -598,6 +674,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
   final Value<String> make;
   final Value<String> model;
   final Value<int> year;
+  final Value<String> color;
   final Value<String?> plateNumber;
   final Value<int> currentOdometer;
   final Value<String> distanceUnit;
@@ -605,6 +682,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
   final Value<String> fuelType;
   final Value<DateTime?> licenseExpiryDate;
   final Value<DateTime?> insuranceExpiryDate;
+  final Value<String?> carViewsJson;
   final Value<bool> isActive;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -613,6 +691,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     this.make = const Value.absent(),
     this.model = const Value.absent(),
     this.year = const Value.absent(),
+    this.color = const Value.absent(),
     this.plateNumber = const Value.absent(),
     this.currentOdometer = const Value.absent(),
     this.distanceUnit = const Value.absent(),
@@ -620,6 +699,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     this.fuelType = const Value.absent(),
     this.licenseExpiryDate = const Value.absent(),
     this.insuranceExpiryDate = const Value.absent(),
+    this.carViewsJson = const Value.absent(),
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -629,6 +709,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     required String make,
     required String model,
     required int year,
+    this.color = const Value.absent(),
     this.plateNumber = const Value.absent(),
     this.currentOdometer = const Value.absent(),
     this.distanceUnit = const Value.absent(),
@@ -636,6 +717,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     this.fuelType = const Value.absent(),
     this.licenseExpiryDate = const Value.absent(),
     this.insuranceExpiryDate = const Value.absent(),
+    this.carViewsJson = const Value.absent(),
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -648,6 +730,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     Expression<String>? make,
     Expression<String>? model,
     Expression<int>? year,
+    Expression<String>? color,
     Expression<String>? plateNumber,
     Expression<int>? currentOdometer,
     Expression<String>? distanceUnit,
@@ -655,6 +738,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     Expression<String>? fuelType,
     Expression<DateTime>? licenseExpiryDate,
     Expression<DateTime>? insuranceExpiryDate,
+    Expression<String>? carViewsJson,
     Expression<bool>? isActive,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -664,6 +748,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
       if (make != null) 'make': make,
       if (model != null) 'model': model,
       if (year != null) 'year': year,
+      if (color != null) 'color': color,
       if (plateNumber != null) 'plate_number': plateNumber,
       if (currentOdometer != null) 'current_odometer': currentOdometer,
       if (distanceUnit != null) 'distance_unit': distanceUnit,
@@ -672,6 +757,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
       if (licenseExpiryDate != null) 'license_expiry_date': licenseExpiryDate,
       if (insuranceExpiryDate != null)
         'insurance_expiry_date': insuranceExpiryDate,
+      if (carViewsJson != null) 'car_views_json': carViewsJson,
       if (isActive != null) 'is_active': isActive,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -683,6 +769,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     Value<String>? make,
     Value<String>? model,
     Value<int>? year,
+    Value<String>? color,
     Value<String?>? plateNumber,
     Value<int>? currentOdometer,
     Value<String>? distanceUnit,
@@ -690,6 +777,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     Value<String>? fuelType,
     Value<DateTime?>? licenseExpiryDate,
     Value<DateTime?>? insuranceExpiryDate,
+    Value<String?>? carViewsJson,
     Value<bool>? isActive,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
@@ -699,6 +787,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
       make: make ?? this.make,
       model: model ?? this.model,
       year: year ?? this.year,
+      color: color ?? this.color,
       plateNumber: plateNumber ?? this.plateNumber,
       currentOdometer: currentOdometer ?? this.currentOdometer,
       distanceUnit: distanceUnit ?? this.distanceUnit,
@@ -706,6 +795,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
       fuelType: fuelType ?? this.fuelType,
       licenseExpiryDate: licenseExpiryDate ?? this.licenseExpiryDate,
       insuranceExpiryDate: insuranceExpiryDate ?? this.insuranceExpiryDate,
+      carViewsJson: carViewsJson ?? this.carViewsJson,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -726,6 +816,9 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     }
     if (year.present) {
       map['year'] = Variable<int>(year.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
     }
     if (plateNumber.present) {
       map['plate_number'] = Variable<String>(plateNumber.value);
@@ -750,6 +843,9 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
         insuranceExpiryDate.value,
       );
     }
+    if (carViewsJson.present) {
+      map['car_views_json'] = Variable<String>(carViewsJson.value);
+    }
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
@@ -769,6 +865,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
           ..write('make: $make, ')
           ..write('model: $model, ')
           ..write('year: $year, ')
+          ..write('color: $color, ')
           ..write('plateNumber: $plateNumber, ')
           ..write('currentOdometer: $currentOdometer, ')
           ..write('distanceUnit: $distanceUnit, ')
@@ -776,6 +873,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
           ..write('fuelType: $fuelType, ')
           ..write('licenseExpiryDate: $licenseExpiryDate, ')
           ..write('insuranceExpiryDate: $insuranceExpiryDate, ')
+          ..write('carViewsJson: $carViewsJson, ')
           ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -3021,6 +3119,7 @@ typedef $$VehiclesTableCreateCompanionBuilder =
       required String make,
       required String model,
       required int year,
+      Value<String> color,
       Value<String?> plateNumber,
       Value<int> currentOdometer,
       Value<String> distanceUnit,
@@ -3028,6 +3127,7 @@ typedef $$VehiclesTableCreateCompanionBuilder =
       Value<String> fuelType,
       Value<DateTime?> licenseExpiryDate,
       Value<DateTime?> insuranceExpiryDate,
+      Value<String?> carViewsJson,
       Value<bool> isActive,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -3038,6 +3138,7 @@ typedef $$VehiclesTableUpdateCompanionBuilder =
       Value<String> make,
       Value<String> model,
       Value<int> year,
+      Value<String> color,
       Value<String?> plateNumber,
       Value<int> currentOdometer,
       Value<String> distanceUnit,
@@ -3045,6 +3146,7 @@ typedef $$VehiclesTableUpdateCompanionBuilder =
       Value<String> fuelType,
       Value<DateTime?> licenseExpiryDate,
       Value<DateTime?> insuranceExpiryDate,
+      Value<String?> carViewsJson,
       Value<bool> isActive,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -3143,6 +3245,11 @@ class $$VehiclesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get plateNumber => $composableBuilder(
     column: $table.plateNumber,
     builder: (column) => ColumnFilters(column),
@@ -3175,6 +3282,11 @@ class $$VehiclesTableFilterComposer
 
   ColumnFilters<DateTime> get insuranceExpiryDate => $composableBuilder(
     column: $table.insuranceExpiryDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get carViewsJson => $composableBuilder(
+    column: $table.carViewsJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3293,6 +3405,11 @@ class $$VehiclesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get plateNumber => $composableBuilder(
     column: $table.plateNumber,
     builder: (column) => ColumnOrderings(column),
@@ -3328,6 +3445,11 @@ class $$VehiclesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get carViewsJson => $composableBuilder(
+    column: $table.carViewsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isActive => $composableBuilder(
     column: $table.isActive,
     builder: (column) => ColumnOrderings(column),
@@ -3360,6 +3482,9 @@ class $$VehiclesTableAnnotationComposer
   GeneratedColumn<int> get year =>
       $composableBuilder(column: $table.year, builder: (column) => column);
 
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
   GeneratedColumn<String> get plateNumber => $composableBuilder(
     column: $table.plateNumber,
     builder: (column) => column,
@@ -3390,6 +3515,11 @@ class $$VehiclesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get insuranceExpiryDate => $composableBuilder(
     column: $table.insuranceExpiryDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get carViewsJson => $composableBuilder(
+    column: $table.carViewsJson,
     builder: (column) => column,
   );
 
@@ -3512,6 +3642,7 @@ class $$VehiclesTableTableManager
                 Value<String> make = const Value.absent(),
                 Value<String> model = const Value.absent(),
                 Value<int> year = const Value.absent(),
+                Value<String> color = const Value.absent(),
                 Value<String?> plateNumber = const Value.absent(),
                 Value<int> currentOdometer = const Value.absent(),
                 Value<String> distanceUnit = const Value.absent(),
@@ -3519,6 +3650,7 @@ class $$VehiclesTableTableManager
                 Value<String> fuelType = const Value.absent(),
                 Value<DateTime?> licenseExpiryDate = const Value.absent(),
                 Value<DateTime?> insuranceExpiryDate = const Value.absent(),
+                Value<String?> carViewsJson = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3527,6 +3659,7 @@ class $$VehiclesTableTableManager
                 make: make,
                 model: model,
                 year: year,
+                color: color,
                 plateNumber: plateNumber,
                 currentOdometer: currentOdometer,
                 distanceUnit: distanceUnit,
@@ -3534,6 +3667,7 @@ class $$VehiclesTableTableManager
                 fuelType: fuelType,
                 licenseExpiryDate: licenseExpiryDate,
                 insuranceExpiryDate: insuranceExpiryDate,
+                carViewsJson: carViewsJson,
                 isActive: isActive,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -3544,6 +3678,7 @@ class $$VehiclesTableTableManager
                 required String make,
                 required String model,
                 required int year,
+                Value<String> color = const Value.absent(),
                 Value<String?> plateNumber = const Value.absent(),
                 Value<int> currentOdometer = const Value.absent(),
                 Value<String> distanceUnit = const Value.absent(),
@@ -3551,6 +3686,7 @@ class $$VehiclesTableTableManager
                 Value<String> fuelType = const Value.absent(),
                 Value<DateTime?> licenseExpiryDate = const Value.absent(),
                 Value<DateTime?> insuranceExpiryDate = const Value.absent(),
+                Value<String?> carViewsJson = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3559,6 +3695,7 @@ class $$VehiclesTableTableManager
                 make: make,
                 model: model,
                 year: year,
+                color: color,
                 plateNumber: plateNumber,
                 currentOdometer: currentOdometer,
                 distanceUnit: distanceUnit,
@@ -3566,6 +3703,7 @@ class $$VehiclesTableTableManager
                 fuelType: fuelType,
                 licenseExpiryDate: licenseExpiryDate,
                 insuranceExpiryDate: insuranceExpiryDate,
+                carViewsJson: carViewsJson,
                 isActive: isActive,
                 createdAt: createdAt,
                 rowid: rowid,

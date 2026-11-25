@@ -4,12 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pitstop/core/database/app_database.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
-import 'package:pitstop/core/utils/currency_formatter.dart';
 import 'package:pitstop/core/utils/reminder_calculator.dart';
+import 'package:pitstop/core/widgets/car_turntable_360_widget.dart';
 import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/core/widgets/pro_badge_widget.dart';
 import 'package:pitstop/core/widgets/status_chip.dart';
-import 'package:pitstop/features/analytics/presentation/bloc/analytics_bloc.dart';
-import 'package:pitstop/features/analytics/presentation/bloc/analytics_state.dart';
 import 'package:pitstop/features/garage/presentation/bloc/garage_bloc.dart';
 import 'package:pitstop/features/garage/presentation/bloc/garage_event.dart';
 import 'package:pitstop/features/garage/presentation/bloc/garage_state.dart';
@@ -20,7 +19,8 @@ import 'package:pitstop/features/paywall/cubit/entitlement_cubit.dart';
 import 'package:pitstop/features/paywall/presentation/paywall_sheet.dart';
 import 'package:pitstop/l10n/app_localizations.dart';
 
-/// Tab 1: Active vehicle overview, urgent alerts, monthly spend, and quick actions.
+/// Tab 1: Active vehicle 360° hero card, odometer update, priority maintenance
+/// alert card, and license/insurance countdown cards.
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -77,259 +77,302 @@ class DashboardPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final isPro = context.watch<EntitlementCubit>().state.isPro;
+    final colors = context.appColors;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              width: 10,
-              height: 22,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(l10n.appName),
-          ],
-        ),
-        actions: [
-          IconButton(
-            tooltip: isArabic ? 'الحساب' : 'Account',
-            icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () => context.push('/sign-in'),
-          ),
-          IconButton(
-            tooltip: l10n.garageTitle,
-            icon: const Icon(Icons.directions_car_outlined),
-            onPressed: () => context.push('/garage'),
-          ),
-          IconButton(
-            tooltip: l10n.navSettings,
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => context.push('/settings'),
-          ),
-        ],
-      ),
-      body: BlocBuilder<GarageBloc, GarageState>(
-        builder: (context, garageState) {
-          if (garageState.status == GarageStatus.loading &&
-              garageState.vehicles.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: SafeArea(
+        child: BlocBuilder<GarageBloc, GarageState>(
+          builder: (context, garageState) {
+            if (garageState.status == GarageStatus.loading &&
+                garageState.vehicles.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final vehicle = garageState.activeVehicle;
-          if (vehicle == null) {
-            return EmptyStateWidget(
-              icon: Icons.directions_car_filled_outlined,
-              title: l10n.emptyVehiclesTitle,
-              subtitle: l10n.emptyVehiclesSubtitle,
-              actionLabel: l10n.addVehicle,
-              onAction: () => context.push('/vehicle/add'),
-            );
-          }
-
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-            children: [
-              _ActiveVehicleCard(
-                vehicle: vehicle,
-                vehicleCount: garageState.vehicles.length,
-                onSwitchVehicle: () => VehicleSwitcherSheet.show(
-                  context,
-                  isPro: isPro,
-                  onPaywallRequired: () => PaywallSheet.show(context),
-                ),
-                onUpdateOdometer: () =>
-                    _showQuickOdometerDialog(context, vehicle),
-              ),
-              const SizedBox(height: 14),
-              _UrgentAlertsBanner(
-                vehicle: vehicle,
-                onViewMaintenance: () => context.go('/maintenance'),
-              ),
-              const SizedBox(height: 14),
-              _MonthlySummaryCard(
-                vehicle: vehicle,
-                locale: isArabic ? 'ar' : 'en',
-              ),
-              const SizedBox(height: 18),
-              Text(
-                l10n.quickActions,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: context.appColors.textSecondary,
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              const SizedBox(height: 10),
-              Row(
+            final vehicle = garageState.activeVehicle;
+            if (vehicle == null) {
+              return Column(
                 children: [
-                  Expanded(
-                    child: _QuickActionTile(
-                      icon: Icons.build_rounded,
-                      label: l10n.logService,
-                      color: AppColors.primary,
-                      onTap: () => context.push('/maintenance/add'),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 12, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          l10n.appName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          tooltip: isArabic ? 'الحساب' : 'Account',
+                          icon: const Icon(Icons.account_circle_outlined),
+                          onPressed: () => context.push('/sign-in'),
+                        ),
+                        IconButton(
+                          tooltip: l10n.navSettings,
+                          icon: const Icon(Icons.settings_outlined),
+                          onPressed: () => context.push('/settings'),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 10),
                   Expanded(
-                    child: _QuickActionTile(
-                      icon: Icons.local_gas_station_rounded,
-                      label: l10n.logFuel,
-                      color: AppColors.ok,
-                      onTap: () => context.push('/fuel/add'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _QuickActionTile(
-                      icon: Icons.receipt_long_rounded,
-                      label: l10n.logExpense,
-                      color: AppColors.dueSoon,
-                      onTap: () => context.push('/expenses/add'),
+                    child: EmptyStateWidget(
+                      icon: Icons.directions_car_filled_outlined,
+                      title: l10n.emptyVehiclesTitle,
+                      subtitle: l10n.emptyVehiclesSubtitle,
+                      actionLabel: l10n.addVehicle,
+                      onAction: () => context.push('/vehicle/add'),
                     ),
                   ),
                 ],
-              ),
-            ],
-          );
-        },
+              );
+            }
+
+            final plateText =
+                vehicle.plateNumber != null && vehicle.plateNumber!.isNotEmpty
+                    ? ' · ${vehicle.plateNumber}'
+                    : '';
+
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
+              children: [
+                // Header: Active vehicle · Plate / Model Year + Switch pill
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () =>
+                            context.push('/vehicle/edit', extra: vehicle),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${isArabic ? 'السيارة النشطة' : 'Active vehicle'}$plateText',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: colors.textSecondary,
+                                    fontSize: 13,
+                                  ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${vehicle.model} ${vehicle.year}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 28,
+                                    letterSpacing: -0.5,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: isArabic ? 'الحساب والمزامنة' : 'Cloud & Account',
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(
+                        Icons.cloud_outlined,
+                        color: colors.textSecondary,
+                        size: 21,
+                      ),
+                      onPressed: () => context.push('/sign-in'),
+                    ),
+                    IconButton(
+                      tooltip: l10n.navSettings,
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(
+                        Icons.settings_outlined,
+                        color: colors.textSecondary,
+                        size: 21,
+                      ),
+                      onPressed: () => context.push('/settings'),
+                    ),
+                    const SizedBox(width: 4),
+                    Material(
+                      color: colors.elevated,
+                      shape: StadiumBorder(
+                        side: BorderSide(color: colors.border),
+                      ),
+                      child: InkWell(
+                        customBorder: const StadiumBorder(),
+                        onTap: () => VehicleSwitcherSheet.show(
+                          context,
+                          isPro: isPro,
+                          onPaywallRequired: () => PaywallSheet.show(context),
+                        ),
+                        onLongPress: () => context.push('/garage'),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 11,
+                          ),
+                          child: Text(
+                            isArabic ? 'تبديل' : 'Switch',
+                            style:
+                                Theme.of(context).textTheme.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: colors.textPrimary,
+                                    ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+
+                // Hero 360° Vehicle Card
+                _HeroVehicle360Card(
+                  vehicle: vehicle,
+                  isArabic: isArabic,
+                  onUpdateOdometer: () =>
+                      _showQuickOdometerDialog(context, vehicle),
+                ),
+                const SizedBox(height: 14),
+
+                // Priority Maintenance Card
+                _PriorityMaintenanceCard(
+                  vehicle: vehicle,
+                  isArabic: isArabic,
+                  onTap: () => context.go('/maintenance'),
+                  onLogFirstService: () => context.push('/maintenance/add'),
+                ),
+                const SizedBox(height: 14),
+
+                // License & Insurance Expiry Cards
+                Row(
+                  children: [
+                    Expanded(
+                      child: _DocumentCountdownCard(
+                        label: isArabic ? 'انتهاء الرخصة' : 'License expires',
+                        expiryDate: vehicle.licenseExpiryDate,
+                        isArabic: isArabic,
+                        onTap: () =>
+                            context.push('/vehicle/edit', extra: vehicle),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _DocumentCountdownCard(
+                        label:
+                            isArabic ? 'انتهاء التأمين' : 'Insurance expires',
+                        expiryDate: vehicle.insuranceExpiryDate,
+                        isArabic: isArabic,
+                        onTap: () =>
+                            context.push('/vehicle/edit', extra: vehicle),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _ActiveVehicleCard extends StatelessWidget {
-  const _ActiveVehicleCard({
+class _HeroVehicle360Card extends StatelessWidget {
+  const _HeroVehicle360Card({
     required this.vehicle,
-    required this.vehicleCount,
-    required this.onSwitchVehicle,
+    required this.isArabic,
     required this.onUpdateOdometer,
   });
 
   final Vehicle vehicle;
-  final int vehicleCount;
-  final VoidCallback onSwitchVehicle;
+  final bool isArabic;
   final VoidCallback onUpdateOdometer;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final colors = context.appColors;
     final numberFormat = NumberFormat('#,##0');
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            InkWell(
-              onTap: onSwitchVehicle,
-              borderRadius: BorderRadius.circular(12),
-              child: Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.16),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(
-                      Icons.directions_car_filled_rounded,
-                      color: AppColors.primary,
-                      size: 26,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                '${vehicle.make} ${vehicle.model}',
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(fontWeight: FontWeight.w800),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: colors.textSecondary,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          '${vehicle.year}'
-                          '${vehicle.plateNumber != null && vehicle.plateNumber!.isNotEmpty ? ' • ${vehicle.plateNumber}' : ''}'
-                          ' • ${vehicle.fuelType.replaceAll('_', ' ').toUpperCase()}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: colors.textSecondary),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (vehicleCount > 1)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colors.elevated,
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: colors.border),
-                      ),
-                      child: Text(
-                        '$vehicleCount',
-                        style: TextStyle(
-                          color: colors.textSecondary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const Divider(height: 24),
             Row(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.currentOdometer,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: colors.textSecondary,
-                          ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${numberFormat.format(vehicle.currentOdometer)} ${vehicle.distanceUnit}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w800),
-                    ),
-                  ],
+                ProBadgeWidget(
+                  label: isArabic
+                      ? 'نموذج 3D بالذكاء الاصطناعي'
+                      : 'AI-generated 3D model',
                 ),
                 const Spacer(),
-                OutlinedButton.icon(
+                Text(
+                  isArabic ? 'اسحب للدوران 360°' : 'Drag to rotate 360°',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.textSecondary,
+                        fontSize: 12.5,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            CarTurntable360Viewer(
+              vehicleColor: vehicle.color,
+              carViewsJson: vehicle.carViewsJson,
+            ),
+            const SizedBox(height: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isArabic ? 'العداد' : 'Odometer',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: colors.textSecondary,
+                              fontSize: 13,
+                            ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${numberFormat.format(vehicle.currentOdometer)} ${vehicle.distanceUnit}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 25,
+                              letterSpacing: -0.4,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                FilledButton(
                   onPressed: onUpdateOdometer,
-                  icon: const Icon(Icons.speed_rounded, size: 18),
-                  label: Text(l10n.updateOdometer),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(98, 46),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 22,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(isArabic ? 'تحديث' : 'Update'),
                 ),
               ],
             ),
@@ -340,215 +383,186 @@ class _ActiveVehicleCard extends StatelessWidget {
   }
 }
 
-class _UrgentAlertsBanner extends StatelessWidget {
-  const _UrgentAlertsBanner({
+class _PriorityMaintenanceCard extends StatelessWidget {
+  const _PriorityMaintenanceCard({
     required this.vehicle,
-    required this.onViewMaintenance,
+    required this.isArabic,
+    required this.onTap,
+    required this.onLogFirstService,
   });
 
   final Vehicle vehicle;
-  final VoidCallback onViewMaintenance;
+  final bool isArabic;
+  final VoidCallback onTap;
+  final VoidCallback onLogFirstService;
+
+  int _statusWeight(MaintenanceStatus s) {
+    return switch (s) {
+      MaintenanceStatus.overdue => 0,
+      MaintenanceStatus.dueSoon => 1,
+      MaintenanceStatus.ok => 2,
+    };
+  }
+
+  String _statusLabel(MaintenanceStatus s) {
+    return switch (s) {
+      MaintenanceStatus.overdue => isArabic ? 'متأخر' : 'Overdue',
+      MaintenanceStatus.dueSoon => isArabic ? 'قريب الاستحقاق' : 'Due Soon',
+      MaintenanceStatus.ok => isArabic ? 'سليم' : 'OK',
+    };
+  }
+
+  String _formatDueSummary(MaintenanceRecord record, MaintenanceStatus status) {
+    final numberFormat = NumberFormat('#,##0');
+    final dateFormat = DateFormat('d MMM yyyy', isArabic ? 'ar' : 'en');
+    final now = DateTime.now();
+
+    if (record.nextDueOdometer != null) {
+      final target = numberFormat.format(record.nextDueOdometer);
+      final diffKm = record.nextDueOdometer! - vehicle.currentOdometer;
+      if (diffKm <= 0) {
+        return isArabic
+            ? 'كان مستحقاً عند $target ${vehicle.distanceUnit}'
+            : 'Was due at $target ${vehicle.distanceUnit}';
+      }
+      final remaining = numberFormat.format(diffKm);
+      return isArabic
+          ? 'الموعد القادم عند $target ${vehicle.distanceUnit} · متبقي $remaining ${vehicle.distanceUnit}'
+          : 'Next due at $target ${vehicle.distanceUnit} · in $remaining ${vehicle.distanceUnit}';
+    }
+
+    if (record.nextDueDate != null) {
+      final today = DateTime(now.year, now.month, now.day);
+      final dueDay = DateTime(
+        record.nextDueDate!.year,
+        record.nextDueDate!.month,
+        record.nextDueDate!.day,
+      );
+      final days = dueDay.difference(today).inDays;
+      final dateStr = dateFormat.format(record.nextDueDate!);
+      if (days < 0) {
+        return isArabic ? 'انتهى في $dateStr' : 'Was due $dateStr';
+      }
+      return isArabic
+          ? 'خلال $days يوم · $dateStr'
+          : 'Next due in $days days · $dateStr';
+    }
+
+    return '${dateFormat.format(record.serviceDate)} · '
+        '${numberFormat.format(record.odometerAtService)} ${vehicle.distanceUnit}';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final colors = context.appColors;
 
     return BlocBuilder<MaintenanceBloc, MaintenanceState>(
       builder: (context, mState) {
-        final licenseStatus = vehicle.licenseExpiryDate != null
-            ? ReminderCalculator.calculateStatus(
-                currentOdometer: 0,
-                nextDueDate: vehicle.licenseExpiryDate,
-              )
-            : MaintenanceStatus.ok;
-        final insuranceStatus = vehicle.insuranceExpiryDate != null
-            ? ReminderCalculator.calculateStatus(
-                currentOdometer: 0,
-                nextDueDate: vehicle.insuranceExpiryDate,
-              )
-            : MaintenanceStatus.ok;
-
-        final docOverdue = (licenseStatus == MaintenanceStatus.overdue ? 1 : 0) +
-            (insuranceStatus == MaintenanceStatus.overdue ? 1 : 0);
-        final docDueSoon = (licenseStatus == MaintenanceStatus.dueSoon ? 1 : 0) +
-            (insuranceStatus == MaintenanceStatus.dueSoon ? 1 : 0);
-
-        final totalOverdue = mState.overdueCount + docOverdue;
-        final totalDueSoon = mState.dueSoonCount + docDueSoon;
-
-        if (totalOverdue == 0 && totalDueSoon == 0) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              color: AppColors.ok.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.ok.withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.verified_rounded,
-                  color: AppColors.ok,
-                  size: 20,
+        if (mState.records.isEmpty) {
+          return Card(
+            child: InkWell(
+              onTap: onLogFirstService,
+              borderRadius: BorderRadius.circular(20),
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isArabic ? 'الصيانة الدورية' : 'Maintenance',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 18,
+                                ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            isArabic
+                                ? 'سجّل أول صيانة لتفعيل تنبيهات العداد والتاريخ'
+                                : 'Tap to log your first service schedule',
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: colors.textSecondary,
+                                      fontSize: 13.5,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const StatusChip(
+                      type: StatusChipType.ok,
+                      label: 'OK',
+                      compact: true,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    l10n.allSystemsOk,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.ok,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ),
-              ],
+              ),
             ),
           );
         }
 
-        final isCritical = totalOverdue > 0;
-        final accent = isCritical ? AppColors.overdue : AppColors.dueSoon;
+        final sorted = [...mState.records]..sort((a, b) {
+            final sa =
+                mState.statusByRecordId[a.id] ?? MaintenanceStatus.ok;
+            final sb =
+                mState.statusByRecordId[b.id] ?? MaintenanceStatus.ok;
+            final w = _statusWeight(sa).compareTo(_statusWeight(sb));
+            if (w != 0) return w;
+            final oa = a.nextDueOdometer ?? 999999999;
+            final ob = b.nextDueOdometer ?? 999999999;
+            return oa.compareTo(ob);
+          });
 
-        return InkWell(
-          onTap: onViewMaintenance,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: accent.withValues(alpha: 0.4)),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  isCritical
-                      ? Icons.warning_amber_rounded
-                      : Icons.schedule_rounded,
-                  color: accent,
-                  size: 26,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.urgentAlerts,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: accent,
-                              fontWeight: FontWeight.w800,
-                            ),
-                      ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 6,
-                        children: [
-                          if (totalOverdue > 0)
-                            StatusChip(
-                              type: StatusChipType.overdue,
-                              label: '$totalOverdue ${l10n.statusOverdue}',
-                              compact: true,
-                            ),
-                          if (totalDueSoon > 0)
-                            StatusChip(
-                              type: StatusChipType.dueSoon,
-                              label: '$totalDueSoon ${l10n.statusDueSoon}',
-                              compact: true,
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(Icons.chevron_right_rounded, color: accent),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
+        final topRecord = sorted.first;
+        final topStatus =
+            mState.statusByRecordId[topRecord.id] ?? MaintenanceStatus.ok;
 
-class _MonthlySummaryCard extends StatelessWidget {
-  const _MonthlySummaryCard({
-    required this.vehicle,
-    required this.locale,
-  });
-
-  final Vehicle vehicle;
-  final String locale;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = context.appColors;
-
-    return BlocBuilder<AnalyticsBloc, AnalyticsState>(
-      builder: (context, state) {
         return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        l10n.monthlySpend,
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: colors.textSecondary,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        CurrencyFormatter.format(
-                          state.thisMonthSpend,
-                          currencyCode: vehicle.currencyCode,
-                          locale: locale,
-                          decimalDigits: 0,
+                      Expanded(
+                        child: Text(
+                          topRecord.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 18,
+                                  ),
                         ),
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w800,
-                            ),
+                      ),
+                      StatusChip(
+                        type: topStatus.toChipType(),
+                        label: _statusLabel(topStatus),
+                        compact: true,
                       ),
                     ],
                   ),
-                ),
-                Container(
-                  width: 1,
-                  height: 42,
-                  color: colors.border,
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.avgFuelEconomy,
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: colors.textSecondary,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        state.avgKmPerL != null
-                            ? '${state.avgKmPerL!.toStringAsFixed(1)} ${l10n.unitKmPerL}'
-                            : '—',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: AppColors.ok,
-                              fontWeight: FontWeight.w800,
-                            ),
-                      ),
-                    ],
+                  const SizedBox(height: 6),
+                  Text(
+                    _formatDueSummary(topRecord, topStatus),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colors.textSecondary,
+                          fontSize: 14,
+                        ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -557,46 +571,72 @@ class _MonthlySummaryCard extends StatelessWidget {
   }
 }
 
-class _QuickActionTile extends StatelessWidget {
-  const _QuickActionTile({
-    required this.icon,
+class _DocumentCountdownCard extends StatelessWidget {
+  const _DocumentCountdownCard({
     required this.label,
-    required this.color,
+    required this.expiryDate,
+    required this.isArabic,
     required this.onTap,
   });
 
-  final IconData icon;
   final String label;
-  final Color color;
+  final DateTime? expiryDate;
+  final bool isArabic;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    String valueText;
+    Color valueColor = colors.textPrimary;
+
+    if (expiryDate == null) {
+      valueText = isArabic ? 'حدد التاريخ' : 'Set date';
+      valueColor = colors.textSecondary;
+    } else {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final target = DateTime(
+        expiryDate!.year,
+        expiryDate!.month,
+        expiryDate!.day,
+      );
+      final days = target.difference(today).inDays;
+      if (days < 0) {
+        valueText = isArabic ? 'منتهية' : 'Expired';
+        valueColor = colors.overdue;
+      } else {
+        valueText = isArabic ? '$days يوم' : '$days days';
+      }
+    }
+
     return Card(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+          padding: const EdgeInsets.all(18),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: color, size: 22),
-              ),
-              const SizedBox(height: 10),
               Text(
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colors.textSecondary,
+                      fontSize: 13,
+                    ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                valueText,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: valueColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 24,
                     ),
               ),
             ],

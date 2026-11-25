@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:pitstop/core/constants/maintenance_presets.dart';
 import 'package:pitstop/core/database/app_database.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
-import 'package:pitstop/core/utils/currency_formatter.dart';
 import 'package:pitstop/core/utils/reminder_calculator.dart';
 import 'package:pitstop/core/widgets/empty_state_widget.dart';
 import 'package:pitstop/core/widgets/status_chip.dart';
@@ -13,8 +12,8 @@ import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_event
 import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_state.dart';
 import 'package:pitstop/features/maintenance/presentation/pages/add_edit_maintenance_page.dart';
 
-/// Displays vehicle maintenance records with segmented filters, status chips,
-/// and quick-add preset chips.
+/// Displays vehicle maintenance schedules with clean status pills (`Overdue`,
+/// `Due Soon`, `OK`) and a full-width bottom `Log a service` CTA.
 class MaintenancePage extends StatelessWidget {
   const MaintenancePage({
     required this.vehicle,
@@ -66,7 +65,7 @@ class MaintenancePage extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDelete(
+  Future<bool> _confirmDelete(
     BuildContext context,
     MaintenanceRecord record,
   ) async {
@@ -86,7 +85,10 @@ class MaintenancePage extends StatelessWidget {
             child: Text(isArabic ? 'إلغاء' : 'Cancel'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppColors.overdue),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.overdue,
+              foregroundColor: Colors.white,
+            ),
             onPressed: () => Navigator.of(dialogContext).pop(true),
             child: Text(isArabic ? 'حذف' : 'Delete'),
           ),
@@ -98,12 +100,23 @@ class MaintenancePage extends StatelessWidget {
       context
           .read<MaintenanceBloc>()
           .add(MaintenanceRecordDeleted(record.id));
+      return true;
     }
+    return false;
+  }
+
+  int _statusWeight(MaintenanceStatus s) {
+    return switch (s) {
+      MaintenanceStatus.overdue => 0,
+      MaintenanceStatus.dueSoon => 1,
+      MaintenanceStatus.ok => 2,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final colors = context.appColors;
     final activeVehicle = vehicle;
 
     if (activeVehicle == null) {
@@ -123,100 +136,82 @@ class MaintenancePage extends StatelessWidget {
 
     return BlocBuilder<MaintenanceBloc, MaintenanceState>(
       builder: (context, state) {
-        final filtered = state.filteredRecords;
+        final sortedRecords = [...state.filteredRecords]..sort((a, b) {
+            final sa =
+                state.statusByRecordId[a.id] ?? MaintenanceStatus.ok;
+            final sb =
+                state.statusByRecordId[b.id] ?? MaintenanceStatus.ok;
+            final cmp = _statusWeight(sa).compareTo(_statusWeight(sb));
+            if (cmp != 0) return cmp;
+            return b.serviceDate.compareTo(a.serviceDate);
+          });
 
         return Scaffold(
           appBar: AppBar(
             title: Text(isArabic ? 'الصيانة' : 'Maintenance'),
             actions: [
-              if (state.overdueCount > 0)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 6),
-                  child: StatusChip(
-                    type: StatusChipType.overdue,
-                    label: '${state.overdueCount}',
-                    compact: true,
-                  ),
+              // Quick preset menu
+              PopupMenuButton<MaintenancePreset>(
+                tooltip: isArabic ? 'إضافة سريعة' : 'Quick preset',
+                icon: Icon(
+                  Icons.bolt_rounded,
+                  color: colors.textSecondary,
                 ),
-              if (state.dueSoonCount > 0)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 12),
-                  child: StatusChip(
-                    type: StatusChipType.dueSoon,
-                    label: '${state.dueSoonCount}',
-                    compact: true,
-                  ),
+                onSelected: (preset) => _openAddEdit(
+                  context,
+                  activeVehicle: activeVehicle,
+                  initialPreset: preset,
                 ),
+                itemBuilder: (_) => [
+                  for (final preset in MaintenancePresets.defaults)
+                    PopupMenuItem(
+                      value: preset,
+                      child: Text(
+                        presetDisplayName(preset.category, isArabic: isArabic),
+                      ),
+                    ),
+                ],
+              ),
+              // Subtle filter menu (All / Upcoming / History)
+              PopupMenuButton<MaintenanceFilter>(
+                tooltip: isArabic ? 'تصفية' : 'Filter',
+                icon: Icon(
+                  state.filter == MaintenanceFilter.all
+                      ? Icons.tune_rounded
+                      : Icons.filter_alt_rounded,
+                  color: state.filter == MaintenanceFilter.all
+                      ? colors.textSecondary
+                      : AppColors.primary,
+                ),
+                onSelected: (f) => context
+                    .read<MaintenanceBloc>()
+                    .add(MaintenanceFilterChanged(f)),
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    value: MaintenanceFilter.all,
+                    child: Text(isArabic ? 'الكل' : 'All'),
+                  ),
+                  PopupMenuItem(
+                    value: MaintenanceFilter.upcoming,
+                    child: Text(isArabic ? 'المستحقة قريباً' : 'Upcoming'),
+                  ),
+                  PopupMenuItem(
+                    value: MaintenanceFilter.history,
+                    child: Text(isArabic ? 'السجل' : 'History'),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 6),
             ],
-          ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => _openAddEdit(
-              context,
-              activeVehicle: activeVehicle,
-            ),
-            icon: const Icon(Icons.add_rounded),
-            label: Text(isArabic ? 'تسجيل صيانة' : 'Log Service'),
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                child: SegmentedButton<MaintenanceFilter>(
-                  segments: [
-                    ButtonSegment(
-                      value: MaintenanceFilter.all,
-                      label: Text(isArabic ? 'الكل' : 'All'),
-                    ),
-                    ButtonSegment(
-                      value: MaintenanceFilter.upcoming,
-                      label: Text(isArabic ? 'المستحقة' : 'Upcoming'),
-                    ),
-                    ButtonSegment(
-                      value: MaintenanceFilter.history,
-                      label: Text(isArabic ? 'السجل' : 'History'),
-                    ),
-                  ],
-                  selected: {state.filter},
-                  onSelectionChanged: (selection) {
-                    context
-                        .read<MaintenanceBloc>()
-                        .add(MaintenanceFilterChanged(selection.first));
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 44,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: MaintenancePresets.defaults.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final preset = MaintenancePresets.defaults[index];
-                    return ActionChip(
-                      avatar: const Icon(Icons.bolt_rounded, size: 16),
-                      label: Text(
-                        presetDisplayName(
-                          preset.category,
-                          isArabic: isArabic,
-                        ),
-                      ),
-                      onPressed: () => _openAddEdit(
-                        context,
-                        activeVehicle: activeVehicle,
-                        initialPreset: preset,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 10),
               Expanded(
                 child: state.status == MaintenanceLoadStatus.loading &&
                         state.records.isEmpty
                     ? const Center(child: CircularProgressIndicator())
-                    : filtered.isEmpty
+                    : sortedRecords.isEmpty
                         ? EmptyStateWidget(
                             icon: Icons.build_circle_outlined,
                             title: isArabic
@@ -225,37 +220,67 @@ class MaintenancePage extends StatelessWidget {
                             subtitle: isArabic
                                 ? 'سجّل أول صيانة للحصول على تنبيهات ذكية حسب العداد والتاريخ.'
                                 : 'Log your first service to get smart odometer and date reminders.',
-                            actionLabel:
-                                isArabic ? 'تسجيل صيانة' : 'Log Service',
-                            onAction: () => _openAddEdit(
-                              context,
-                              activeVehicle: activeVehicle,
-                            ),
                           )
                         : ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-                            itemCount: filtered.length,
+                            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                            itemCount: sortedRecords.length,
                             separatorBuilder: (_, _) =>
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final record = filtered[index];
-                              final status = state.statusByRecordId[record.id] ??
-                                  MaintenanceStatus.ok;
-                              return _MaintenanceRecordCard(
-                                record: record,
-                                vehicle: activeVehicle,
-                                status: status,
-                                isArabic: isArabic,
-                                onEdit: () => _openAddEdit(
-                                  context,
-                                  activeVehicle: activeVehicle,
-                                  record: record,
-                                ),
-                                onDelete: () =>
+                              final record = sortedRecords[index];
+                              final status =
+                                  state.statusByRecordId[record.id] ??
+                                      MaintenanceStatus.ok;
+                              return Dismissible(
+                                key: ValueKey(record.id),
+                                direction: DismissDirection.endToStart,
+                                confirmDismiss: (_) =>
                                     _confirmDelete(context, record),
+                                background: Container(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 22,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.overdueSurfaceDark,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: AppColors.overdue,
+                                  ),
+                                ),
+                                child: _MaintenanceRecordCard(
+                                  record: record,
+                                  vehicle: activeVehicle,
+                                  status: status,
+                                  isArabic: isArabic,
+                                  onEdit: () => _openAddEdit(
+                                    context,
+                                    activeVehicle: activeVehicle,
+                                    record: record,
+                                  ),
+                                  onLongPressDelete: () =>
+                                      _confirmDelete(context, record),
+                                ),
                               );
                             },
                           ),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                  child: FilledButton(
+                    onPressed: () => _openAddEdit(
+                      context,
+                      activeVehicle: activeVehicle,
+                    ),
+                    child: Text(
+                      isArabic ? 'تسجيل صيانة' : 'Log a service',
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -272,7 +297,7 @@ class _MaintenanceRecordCard extends StatelessWidget {
     required this.status,
     required this.isArabic,
     required this.onEdit,
-    required this.onDelete,
+    required this.onLongPressDelete,
   });
 
   final MaintenanceRecord record;
@@ -280,7 +305,7 @@ class _MaintenanceRecordCard extends StatelessWidget {
   final MaintenanceStatus status;
   final bool isArabic;
   final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback onLongPressDelete;
 
   String _statusLabel() {
     return switch (status) {
@@ -290,47 +315,90 @@ class _MaintenanceRecordCard extends StatelessWidget {
     };
   }
 
+  String _subtitleText() {
+    final numberFormat = NumberFormat('#,##0');
+    final dateFormat = DateFormat('d MMM yyyy', isArabic ? 'ar' : 'en');
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    // Date-driven due message when due soon / overdue by date, or when only date is set
+    if (record.nextDueDate != null) {
+      final dueDay = DateTime(
+        record.nextDueDate!.year,
+        record.nextDueDate!.month,
+        record.nextDueDate!.day,
+      );
+      final days = dueDay.difference(today).inDays;
+      final dateStr = dateFormat.format(record.nextDueDate!);
+
+      if (record.nextDueOdometer == null) {
+        if (days < 0) {
+          return isArabic ? 'كان مستحقاً في $dateStr' : 'Was due $dateStr';
+        }
+        if (days <= 14) {
+          return isArabic
+              ? 'خلال $days أيام · $dateStr'
+              : 'Next due in $days days · $dateStr';
+        }
+        return isArabic ? 'الموعد القادم $dateStr' : 'Next due $dateStr';
+      }
+
+      // Both odometer & date exist: highlight date if date triggered dueSoon/overdue
+      if (days <= 14 &&
+          (record.nextDueOdometer! - vehicle.currentOdometer) > 500) {
+        if (days < 0) {
+          return isArabic ? 'كان مستحقاً في $dateStr' : 'Was due $dateStr';
+        }
+        return isArabic
+            ? 'خلال $days أيام · $dateStr'
+            : 'Next due in $days days · $dateStr';
+      }
+    }
+
+    if (record.nextDueOdometer != null) {
+      final dueKm = numberFormat.format(record.nextDueOdometer);
+      if (vehicle.currentOdometer >= record.nextDueOdometer!) {
+        return isArabic
+            ? 'كان مستحقاً عند $dueKm ${vehicle.distanceUnit}'
+            : 'Was due at $dueKm ${vehicle.distanceUnit}';
+      }
+      return isArabic
+          ? 'الموعد القادم عند $dueKm ${vehicle.distanceUnit}'
+          : 'Next due at $dueKm ${vehicle.distanceUnit}';
+    }
+
+    return '${dateFormat.format(record.serviceDate)} · '
+        '${numberFormat.format(record.odometerAtService)} ${vehicle.distanceUnit}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final dateFormat = DateFormat('yyyy-MM-dd');
-    final numberFormat = NumberFormat('#,##0');
 
     return Card(
       child: InkWell(
         onTap: onEdit,
-        borderRadius: BorderRadius.circular(16),
+        onLongPress: onLongPressDelete,
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          record.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${dateFormat.format(record.serviceDate)} • '
-                          '${numberFormat.format(record.odometerAtService)} ${vehicle.distanceUnit}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: colors.textSecondary),
-                        ),
-                      ],
+                    child: Text(
+                      record.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 18,
+                          ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   StatusChip(
                     type: status.toChipType(),
                     label: _statusLabel(),
@@ -338,82 +406,27 @@ class _MaintenanceRecordCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               Row(
                 children: [
-                  Text(
-                    CurrencyFormatter.format(
-                      record.cost,
-                      currencyCode: vehicle.currencyCode,
-                      locale: isArabic ? 'ar' : 'en',
-                      decimalDigits: 0,
+                  Expanded(
+                    child: Text(
+                      _subtitleText(),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: colors.textSecondary,
+                            fontSize: 14,
+                          ),
                     ),
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w800,
-                        ),
                   ),
-                  if (record.serviceCenter != null &&
-                      record.serviceCenter!.isNotEmpty) ...[
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        record.serviceCenter!,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: colors.textSecondary),
-                      ),
-                    ),
-                  ] else
-                    const Spacer(),
                   if (record.receiptImagePath != null &&
                       record.receiptImagePath!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 4),
-                      child: Icon(
-                        Icons.receipt_long_rounded,
-                        size: 18,
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded, size: 20),
-                    color: colors.textMuted,
-                    visualDensity: VisualDensity.compact,
-                    onPressed: onDelete,
-                  ),
-                ],
-              ),
-              if (record.nextDueOdometer != null ||
-                  record.nextDueDate != null) ...[
-                const Divider(height: 16),
-                Row(
-                  children: [
                     Icon(
-                      Icons.notifications_active_outlined,
-                      size: 15,
+                      Icons.receipt_long_rounded,
+                      size: 16,
                       color: colors.textMuted,
                     ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        [
-                          if (record.nextDueOdometer != null)
-                            '${isArabic ? 'التالي عند' : 'Next at'} ${numberFormat.format(record.nextDueOdometer)} ${vehicle.distanceUnit}',
-                          if (record.nextDueDate != null)
-                            dateFormat.format(record.nextDueDate!),
-                        ].join('  •  '),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: colors.textSecondary),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ],
           ),
         ),

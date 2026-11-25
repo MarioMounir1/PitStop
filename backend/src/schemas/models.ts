@@ -8,6 +8,7 @@ export const vehicleSchema = z.object({
   make: z.string().min(1),
   model: z.string().min(1),
   year: z.number().int().min(1950).max(2035),
+  color: z.string().min(1).default('White').optional(),
   plateNumber: z.string().nullable().optional(),
   currentOdometer: z.number().int().min(0).default(0),
   distanceUnit: z.enum(['km', 'mi']).default('km'),
@@ -15,9 +16,34 @@ export const vehicleSchema = z.object({
   fuelType: z.string().min(1).default('petrol_92'),
   licenseExpiryDate: nullableIsoDateString,
   insuranceExpiryDate: nullableIsoDateString,
+  carViewsJson: z.string().nullable().optional(),
   isActive: z.boolean().default(false),
   createdAt: isoDateString.optional(),
 });
+
+export const carAngleEnum = z.enum([
+  'front',
+  'front_3_4',
+  'side',
+  'rear_3_4',
+  'rear',
+  'rear_3_4_l',
+  'side_l',
+  'front_3_4_l',
+]);
+
+export const generateCarViewRequestSchema = z.object({
+  make: z.string().min(1),
+  model: z.string().min(1),
+  year: z.number().int().min(1950).max(2035),
+  color: z.string().min(1).default('White'),
+  angle: carAngleEnum,
+  referenceImageBase64: z.string().min(1).optional(),
+  referenceMimeType: z.string().min(1).default('image/png').optional(),
+});
+
+export type CarAngleKey = z.infer<typeof carAngleEnum>;
+export type GenerateCarViewRequest = z.infer<typeof generateCarViewRequestSchema>;
 
 export const vehicleUpdateSchema = vehicleSchema.partial().omit({ id: true });
 

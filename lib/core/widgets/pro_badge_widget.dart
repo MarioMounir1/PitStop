@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
 
-/// Compact badge highlighting PitStop Pro features.
+/// Warm amber pill badge highlighting PitStop Pro or AI features.
 class ProBadgeWidget extends StatelessWidget {
   const ProBadgeWidget({
-    this.label = 'PRO',
+    this.label = 'Pro',
     this.compact = false,
     this.onTap,
     super.key,
@@ -16,45 +16,35 @@ class ProBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark
+        ? AppColors.dueSoonSurfaceDark
+        : AppColors.primary.withValues(alpha: 0.18);
+    final fg = isDark ? AppColors.dueSoon : const Color(0xFF92400E);
+
     final badge = Container(
       padding: EdgeInsets.symmetric(
-        horizontal: compact ? 6 : 8,
-        vertical: compact ? 2 : 4,
+        horizontal: compact ? 10 : 12,
+        vertical: compact ? 3 : 5,
       ),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryDark],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(6),
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.workspace_premium_rounded,
-            size: compact ? 11 : 13,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 3),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  fontSize: compact ? 10 : 11,
-                ),
-          ),
-        ],
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: fg,
+              fontWeight: FontWeight.w700,
+              fontSize: compact ? 11 : 12,
+            ),
       ),
     );
 
     if (onTap == null) return badge;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(999),
       child: badge,
     );
   }

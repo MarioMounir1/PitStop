@@ -83,6 +83,7 @@ void main() {
         make: 'Honda',
         model: 'Civic',
         year: 2023,
+        color: const Value('Silver'),
         currentOdometer: const Value(30000),
       ),
     );
@@ -134,5 +135,6 @@ void main() {
 
     final restoredVehicles = await garageRepo.getVehicles();
     expect(restoredVehicles.single.make, 'Honda');
+    expect(restoredVehicles.single.color, 'Silver');
   });
 }

@@ -8,7 +8,7 @@ enum StatusChipType {
   overdue,
 }
 
-/// Compact semantic pill used across maintenance cards, alerts, and dashboards.
+/// Clean semantic pill matching the Dark Amber Automotive design system.
 class StatusChip extends StatelessWidget {
   const StatusChip({
     required this.type,
@@ -23,7 +23,7 @@ class StatusChip extends StatelessWidget {
   final IconData? icon;
   final bool compact;
 
-  Color _colorForType(AppColorExtension colors) {
+  Color _textColor(AppColorExtension colors) {
     return switch (type) {
       StatusChipType.ok => colors.ok,
       StatusChipType.dueSoon => colors.dueSoon,
@@ -31,45 +31,49 @@ class StatusChip extends StatelessWidget {
     };
   }
 
-  IconData _defaultIconForType() {
+  Color _backgroundColor(BuildContext context, Color foreground) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (!isDark) {
+      return foreground.withValues(alpha: 0.14);
+    }
     return switch (type) {
-      StatusChipType.ok => Icons.check_circle_rounded,
-      StatusChipType.dueSoon => Icons.schedule_rounded,
-      StatusChipType.overdue => Icons.warning_amber_rounded,
+      StatusChipType.ok => AppColors.okSurfaceDark,
+      StatusChipType.dueSoon => AppColors.dueSoonSurfaceDark,
+      StatusChipType.overdue => AppColors.overdueSurfaceDark,
     };
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = _colorForType(context.appColors);
+    final fg = _textColor(context.appColors);
+    final bg = _backgroundColor(context, fg);
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: compact ? 8 : 10,
-        vertical: compact ? 3 : 5,
+        horizontal: compact ? 11 : 13,
+        vertical: compact ? 4 : 6,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
+        color: bg,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: color.withValues(alpha: 0.35),
-        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon ?? _defaultIconForType(),
-            size: compact ? 13 : 15,
-            color: color,
-          ),
-          const SizedBox(width: 5),
+          if (icon != null) ...[
+            Icon(
+              icon,
+              size: compact ? 13 : 15,
+              color: fg,
+            ),
+            const SizedBox(width: 5),
+          ],
           Text(
             label,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: color,
+                  color: fg,
                   fontWeight: FontWeight.w700,
-                  fontSize: compact ? 11 : 12,
+                  fontSize: compact ? 12 : 13,
                 ),
           ),
         ],

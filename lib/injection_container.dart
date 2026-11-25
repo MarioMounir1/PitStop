@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pitstop/core/database/app_database.dart';
 import 'package:pitstop/core/services/auth_service.dart';
 import 'package:pitstop/core/services/backup_service.dart';
+import 'package:pitstop/core/services/car_view_generator_service.dart';
 import 'package:pitstop/core/services/cloud_sync_service.dart';
 import 'package:pitstop/core/services/monetization_service.dart';
 import 'package:pitstop/core/services/notification_service.dart';
@@ -49,6 +50,9 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<AuthService>(AuthService.new);
   sl.registerLazySingleton<CloudSyncService>(
     () => CloudSyncService(backupService: sl<BackupService>()),
+  );
+  sl.registerLazySingleton<CarViewGeneratorService>(
+    () => CarViewGeneratorService(authService: sl<AuthService>()),
   );
 
   // Repositories

@@ -149,6 +149,16 @@ test('PitStop Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)',
   const app = createApp({
     store,
     enableLogging: false,
+    carViewRenderer: {
+      async generateAngle(req) {
+        return {
+          angle: req.angle,
+          mimeType: 'image/png',
+          imageBase64: Buffer.from(`mock-${req.angle}`).toString('base64'),
+          model: 'gemini-nano-banana-2.1',
+        };
+      },
+    },
     tokenVerifier: async (token) => {
       if (token === 'valid-firebase-token') return { uid: 'user-123' };
       throw new Error('Invalid token');
@@ -243,6 +253,28 @@ test('PitStop Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)',
     assert.equal(pullBody.tables.maintenanceRecords.length, 1);
     assert.equal(pullBody.tables.fuelLogs.length, 1);
     assert.equal(pullBody.tables.expenses.length, 1);
+
+    // 4b. Generate 360° car view angle via Gemini endpoint
+    const renderRes = await fetch(`${baseUrl}/api/car-views/generate`, {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify({
+        make: 'Toyota',
+        model: 'Corolla',
+        year: 2019,
+        color: 'White',
+        angle: 'front',
+      }),
+    });
+    assert.equal(renderRes.status, 200);
+    const renderBody = (await renderRes.json()) as {
+      angle: string;
+      imageBase64: string;
+      model: string;
+    };
+    assert.equal(renderBody.angle, 'front');
+    assert.equal(renderBody.model, 'gemini-nano-banana-2.1');
+    assert.ok(renderBody.imageBase64.length > 0);
 
     // 5. Cascade delete vehicle removes child records
     const delRes = await fetch(`${baseUrl}/api/vehicles/v1`, {
