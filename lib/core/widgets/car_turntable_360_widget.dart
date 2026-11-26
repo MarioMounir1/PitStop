@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:pitstop/core/services/car_view_generator_service.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
@@ -140,38 +142,72 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   dynamic _webViewController;
   String? _precachedAssetDir;
 
-  bool _networkStudioFailed = false;
+  static final Map<String, String?> _wikiPhotoCache = {};
+  String? _resolvedPhotoUrl;
+  String? _photoLookupKey;
 
-  static const Map<CarViewAngle, String> _imaginAngles = {
-    CarViewAngle.front: '01',
-    CarViewAngle.front34: '29',
-    CarViewAngle.side: '09',
-    CarViewAngle.rear34: '13',
-    CarViewAngle.rear: '17',
-    CarViewAngle.rear34Left: '21',
-    CarViewAngle.sideLeft: '25',
-    CarViewAngle.front34Left: '05',
-  };
+  Future<void> _lookupRealCarPhoto() async {
+    final make = widget.make.trim();
+    final model = widget.model.trim();
+    if (make.isEmpty && model.isEmpty) return;
 
-  String? _buildImaginStudioUrl(CarViewAngle angle) {
-    final make = widget.make.trim().toLowerCase();
-    final rawModel = widget.model.trim().toLowerCase();
-    if (make.isEmpty && rawModel.isEmpty) return null;
+    final key = '${make.toLowerCase()}|${model.toLowerCase()}';
+    if (_photoLookupKey == key) return;
+    _photoLookupKey = key;
 
-    // Extract clean modelFamily (e.g. "m4 competition" -> "m4", "320i" -> "3-series")
-    final modelFamily = rawModel.split(RegExp(r'\s+')).first;
-    final params = <String, String>{
-      'customer': 'hrjavascript-mastery',
-      if (make.isNotEmpty) 'make': make,
-      if (modelFamily.isNotEmpty) 'modelFamily': modelFamily,
-      if (widget.year != null) 'modelYear': '${widget.year}',
-      if (widget.vehicleColor.trim().isNotEmpty)
-        'paintDescription': widget.vehicleColor.trim().toLowerCase(),
-      'angle': _imaginAngles[angle] ?? '29',
-      'zoomType': 'fullscreen',
-      'fileType': 'png',
-    };
-    return Uri.https('cdn.imagin.studio', '/getimage', params).toString();
+    if (_wikiPhotoCache.containsKey(key)) {
+      if (mounted) {
+        setState(() => _resolvedPhotoUrl = _wikiPhotoCache[key]);
+      }
+      return;
+    }
+
+    try {
+      final query = '$make $model'.trim();
+      final searchUri = Uri.https('en.wikipedia.org', '/w/api.php', {
+        'action': 'query',
+        'format': 'json',
+        'generator': 'search',
+        'gsrsearch': '$query car',
+        'gsrlimit': '3',
+        'prop': 'pageimages',
+        'piprop': 'thumbnail',
+        'pithumbsize': '900',
+      });
+      final res = await http.get(
+        searchUri,
+        headers: const {'User-Agent': 'PitStopApp/1.0'},
+      ).timeout(const Duration(seconds: 6));
+
+      String? foundUrl;
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body) as Map<String, dynamic>;
+        final pages = (decoded['query'] as Map<String, dynamic>?)?['pages']
+            as Map<String, dynamic>?;
+        if (pages != null) {
+          final sorted = pages.values.whereType<Map<String, dynamic>>().toList()
+            ..sort(
+              (a, b) => ((a['index'] as num?) ?? 99)
+                  .compareTo((b['index'] as num?) ?? 99),
+            );
+          for (final page in sorted) {
+            final thumb = (page['thumbnail'] as Map<String, dynamic>?)?['source']
+                as String?;
+            if (thumb != null && thumb.isNotEmpty) {
+              foundUrl = thumb;
+              break;
+            }
+          }
+        }
+      }
+
+      _wikiPhotoCache[key] = foundUrl;
+      if (mounted && _photoLookupKey == key) {
+        setState(() => _resolvedPhotoUrl = foundUrl);
+      }
+    } catch (_) {
+      _wikiPhotoCache[key] = null;
+    }
   }
 
   /// Resolves a bundled photorealistic 8-angle studio asset directory for
@@ -193,6 +229,9 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _precacheBundledStudioIfNeeded();
+    if (_resolveBundledStudioDir() == null) {
+      _lookupRealCarPhoto();
+    }
   }
 
   void _precacheBundledStudioIfNeeded() {
@@ -251,8 +290,12 @@ if (pitStopMv) {
         oldWidget.model != widget.model ||
         oldWidget.year != widget.year ||
         oldWidget.vehicleColor != widget.vehicleColor) {
-      _networkStudioFailed = false;
+      _resolvedPhotoUrl = null;
+      _photoLookupKey = null;
       _precacheBundledStudioIfNeeded();
+      if (_resolveBundledStudioDir() == null) {
+        _lookupRealCarPhoto();
+      }
     }
     if (oldWidget.vehicleColor != widget.vehicleColor ||
         oldWidget.carViewsJson != widget.carViewsJson) {
@@ -372,43 +415,37 @@ if (pitStopMv) {
       );
     }
 
-    // 3. Live 360° real car studio renders for ANY make / model / year / color
-    final currentAngle =
-        CarViewAngle.values[_aiAngleIndex % CarViewAngle.values.length];
-    final imaginUrl =
-        _networkStudioFailed ? null : _buildImaginStudioUrl(currentAngle);
-    if (imaginUrl != null) {
-      return _build360ImageTurntable(
-        cardBg: cardBg,
-        imageWidget: Image.network(
-          imaginUrl,
-          height: 210,
-          fit: BoxFit.contain,
-          gaplessPlayback: true,
-          loadingBuilder: (context, child, progress) {
-            if (progress == null) return child;
-            return const SizedBox(
-              height: 210,
-              child: Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.2,
-                    color: AppColors.primary,
+    // 3. Real car photo resolved from Wikipedia/Wikimedia for ANY make & model
+    if (_resolvedPhotoUrl != null) {
+      return SizedBox(
+        height: 224,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                _resolvedPhotoUrl!,
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      cardBg.withValues(alpha: 0.15),
+                      Colors.transparent,
+                      cardBg.withValues(alpha: 0.85),
+                    ],
+                    stops: const [0.0, 0.55, 1.0],
                   ),
                 ),
               ),
-            );
-          },
-          errorBuilder: (_, _, _) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted && !_networkStudioFailed) {
-                setState(() => _networkStudioFailed = true);
-              }
-            });
-            return const SizedBox(height: 210);
-          },
+            ],
+          ),
         ),
       );
     }
