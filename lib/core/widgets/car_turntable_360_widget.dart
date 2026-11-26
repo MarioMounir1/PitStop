@@ -119,12 +119,14 @@ class CarTurntable360Viewer extends StatefulWidget {
     required this.vehicleColor,
     this.make = '',
     this.model = '',
+    this.year,
     this.carViewsJson,
     super.key,
   });
 
   final String make;
   final String model;
+  final int? year;
   final String vehicleColor;
   final String? carViewsJson;
 
@@ -137,6 +139,40 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   double _dragAccum = 0;
   dynamic _webViewController;
   String? _precachedAssetDir;
+
+  bool _networkStudioFailed = false;
+
+  static const Map<CarViewAngle, String> _imaginAngles = {
+    CarViewAngle.front: '01',
+    CarViewAngle.front34: '29',
+    CarViewAngle.side: '09',
+    CarViewAngle.rear34: '13',
+    CarViewAngle.rear: '17',
+    CarViewAngle.rear34Left: '21',
+    CarViewAngle.sideLeft: '25',
+    CarViewAngle.front34Left: '05',
+  };
+
+  String? _buildImaginStudioUrl(CarViewAngle angle) {
+    final make = widget.make.trim().toLowerCase();
+    final rawModel = widget.model.trim().toLowerCase();
+    if (make.isEmpty && rawModel.isEmpty) return null;
+
+    // Extract clean modelFamily (e.g. "m4 competition" -> "m4", "320i" -> "3-series")
+    final modelFamily = rawModel.split(RegExp(r'\s+')).first;
+    final params = <String, String>{
+      'customer': 'hrjavascript-mastery',
+      if (make.isNotEmpty) 'make': make,
+      if (modelFamily.isNotEmpty) 'modelFamily': modelFamily,
+      if (widget.year != null) 'modelYear': '${widget.year}',
+      if (widget.vehicleColor.trim().isNotEmpty)
+        'paintDescription': widget.vehicleColor.trim().toLowerCase(),
+      'angle': _imaginAngles[angle] ?? '29',
+      'zoomType': 'fullscreen',
+      'fileType': 'png',
+    };
+    return Uri.https('cdn.imagin.studio', '/getimage', params).toString();
+  }
 
   /// Resolves a bundled photorealistic 8-angle studio asset directory for
   /// supported vehicles (e.g., 2026 BMW 320i G20 LCI II).
@@ -211,7 +247,11 @@ if (pitStopMv) {
   @override
   void didUpdateWidget(covariant CarTurntable360Viewer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.make != widget.make || oldWidget.model != widget.model) {
+    if (oldWidget.make != widget.make ||
+        oldWidget.model != widget.model ||
+        oldWidget.year != widget.year ||
+        oldWidget.vehicleColor != widget.vehicleColor) {
+      _networkStudioFailed = false;
       _precacheBundledStudioIfNeeded();
     }
     if (oldWidget.vehicleColor != widget.vehicleColor ||
@@ -332,7 +372,48 @@ if (pitStopMv) {
       );
     }
 
-    // 3. Real high-poly WebGL PBR 3D Car (`assets/models/car_studio.glb`)
+    // 3. Live 360° real car studio renders for ANY make / model / year / color
+    final currentAngle =
+        CarViewAngle.values[_aiAngleIndex % CarViewAngle.values.length];
+    final imaginUrl =
+        _networkStudioFailed ? null : _buildImaginStudioUrl(currentAngle);
+    if (imaginUrl != null) {
+      return _build360ImageTurntable(
+        cardBg: cardBg,
+        imageWidget: Image.network(
+          imaginUrl,
+          height: 210,
+          fit: BoxFit.contain,
+          gaplessPlayback: true,
+          loadingBuilder: (context, child, progress) {
+            if (progress == null) return child;
+            return const SizedBox(
+              height: 210,
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.2,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            );
+          },
+          errorBuilder: (_, _, _) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted && !_networkStudioFailed) {
+                setState(() => _networkStudioFailed = true);
+              }
+            });
+            return const SizedBox(height: 210);
+          },
+        ),
+      );
+    }
+
+    // 4. Offline fallback: WebGL PBR 3D Car (`assets/models/car_studio.glb`)
     if (_supportsNativeWebGlModelViewer) {
 
       return SizedBox(

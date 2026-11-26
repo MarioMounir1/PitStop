@@ -375,6 +375,7 @@ class _HeroVehicle360Card extends StatelessWidget {
             CarTurntable360Viewer(
               make: vehicle.make,
               model: vehicle.model,
+              year: vehicle.year,
               vehicleColor: vehicle.color,
               carViewsJson: vehicle.carViewsJson,
             ),
