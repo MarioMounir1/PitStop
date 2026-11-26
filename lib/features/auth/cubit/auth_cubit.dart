@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pitstop/core/services/auth_service.dart';
 import 'package:pitstop/core/services/cloud_sync_service.dart';
+import 'package:pitstop/core/services/push_notification_service.dart';
 import 'package:pitstop/features/auth/cubit/auth_state.dart';
 
 /// Manages Firebase Auth sign-in/sign-up/guest sessions and cloud sync actions.
@@ -11,14 +12,19 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
     required this.authService,
     required this.cloudSyncService,
+    this.pushNotificationService,
   }) : super(AuthState(user: authService.currentUser)) {
     _authSub = authService.authStateChanges.listen((user) {
       emit(state.copyWith(user: user, clearUser: user == null));
+      if (user != null) {
+        pushNotificationService?.registerTokenWithBackend();
+      }
     });
   }
 
   final AuthService authService;
   final CloudSyncService cloudSyncService;
+  final PushNotificationService? pushNotificationService;
   StreamSubscription<AuthUser?>? _authSub;
 
   Future<bool> signInWithEmail({

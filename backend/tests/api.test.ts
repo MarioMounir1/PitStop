@@ -146,9 +146,27 @@ class InMemoryPitStopStore implements PitStopDataStore {
 
 test('PitStop Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)', async () => {
   const store = new InMemoryPitStopStore();
+  const registeredTokens = new Map<string, Set<string>>();
   const app = createApp({
     store,
     enableLogging: false,
+    pushService: {
+      async registerDevice(uid, token) {
+        const set = registeredTokens.get(uid) ?? new Set<string>();
+        set.add(token);
+        registeredTokens.set(uid, set);
+      },
+      async unregisterDevice(uid, token) {
+        registeredTokens.get(uid)?.delete(token);
+      },
+      async listDeviceTokens(uid) {
+        return [...(registeredTokens.get(uid) ?? [])];
+      },
+      async sendToUser(uid) {
+        const count = registeredTokens.get(uid)?.size ?? 0;
+        return { sent: count, failed: 0, removedTokens: 0 };
+      },
+    },
     carViewRenderer: {
       async generateAngle(req) {
         return {
@@ -275,6 +293,65 @@ test('PitStop Node.js + Firebase API routes (auth, CRUD, cascade delete, sync)',
     assert.equal(renderBody.angle, 'front');
     assert.equal(renderBody.model, 'gemini-nano-banana-2.1');
     assert.ok(renderBody.imageBase64.length > 0);
+
+    // 4c. Push notification device registration, queueing & status
+    const regDeviceRes = await fetch(`${baseUrl}/api/notifications/devices`, {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify({
+        token: 'fcm-test-device-token-1234567890',
+        platform: 'android',
+      }),
+    });
+    assert.equal(regDeviceRes.status, 201);
+
+    const sendPushRes = await fetch(`${baseUrl}/api/notifications/send`, {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify({
+        title: 'Oil Change Due',
+        body: 'Your 2026 BMW 320i is due for service.',
+      }),
+    });
+    assert.equal(sendPushRes.status, 202);
+    const sendPushBody = (await sendPushRes.json()) as { jobId: string };
+    assert.ok(sendPushBody.jobId.length > 0);
+
+    const scheduleRes = await fetch(
+      `${baseUrl}/api/notifications/schedule-reminder`,
+      {
+        method: 'POST',
+        headers: authHeaders,
+        body: JSON.stringify({
+          title: 'License Expiry',
+          body: 'Your vehicle license expires in 7 days.',
+          scheduledAt: new Date(Date.now() + 3600_000).toISOString(),
+          vehicleId: 'v1',
+          reminderType: 'license',
+        }),
+      },
+    );
+    assert.equal(scheduleRes.status, 202);
+
+    const queueStatusRes = await fetch(
+      `${baseUrl}/api/notifications/queue-status`,
+      { headers: authHeaders },
+    );
+    assert.equal(queueStatusRes.status, 200);
+    const queueStatusBody = (await queueStatusRes.json()) as {
+      enabled: boolean;
+      waiting: number;
+    };
+    assert.equal(typeof queueStatusBody.enabled, 'boolean');
+
+    const delDeviceRes = await fetch(
+      `${baseUrl}/api/notifications/devices/fcm-test-device-token-1234567890`,
+      {
+        method: 'DELETE',
+        headers: authHeaders,
+      },
+    );
+    assert.equal(delDeviceRes.status, 200);
 
     // 5. Cascade delete vehicle removes child records
     const delRes = await fetch(`${baseUrl}/api/vehicles/v1`, {

@@ -29,6 +29,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Default FCM notification channel for Android 8+ background pushes -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="pitstop_reminders" />
+
         <!-- Google Mobile Ads test App ID (replace with production App ID before release) -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

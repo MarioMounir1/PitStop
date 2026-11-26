@@ -8,8 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pitstop/core/constants/maintenance_presets.dart';
 import 'package:pitstop/core/database/app_database.dart';
+import 'package:pitstop/core/services/push_notification_service.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
 import 'package:pitstop/core/utils/reminder_calculator.dart';
+import 'package:pitstop/injection_container.dart';
 import 'package:pitstop/core/widgets/pro_badge_widget.dart';
 import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_bloc.dart';
 import 'package:pitstop/features/maintenance/presentation/bloc/maintenance_event.dart';
@@ -238,6 +240,19 @@ class _AddEditMaintenancePageState extends State<AddEditMaintenancePage> {
             isCompleted: Value(_isCompleted),
           ),
         ),
+      );
+    }
+
+    if (_reminderEnabled &&
+        _nextDueDate != null &&
+        _nextDueDate!.isAfter(DateTime.now()) &&
+        sl.isRegistered<PushNotificationService>()) {
+      sl<PushNotificationService>().scheduleBackendReminder(
+        title: '${widget.vehicle.make} ${widget.vehicle.model} — ${_titleController.text.trim()}',
+        body: 'Scheduled maintenance is due soon.',
+        scheduledAt: _nextDueDate!,
+        vehicleId: widget.vehicle.id,
+        reminderType: _selectedCategory,
       );
     }
 

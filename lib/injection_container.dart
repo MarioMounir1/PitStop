@@ -84,6 +84,7 @@ Future<void> initDependencies() async {
     () => AuthCubit(
       authService: sl<AuthService>(),
       cloudSyncService: sl<CloudSyncService>(),
+      pushNotificationService: sl<PushNotificationService>(),
     ),
   );
   sl.registerFactory<SettingsCubit>(
