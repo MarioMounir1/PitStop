@@ -1,4 +1,4 @@
-package com.pitstop.pitstop
+package com.mario.PitStop
 
 import io.flutter.embedding.android.FlutterActivity
 
