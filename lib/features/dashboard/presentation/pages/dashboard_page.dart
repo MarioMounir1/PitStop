@@ -164,7 +164,12 @@ class DashboardPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '${vehicle.model} ${vehicle.year}',
+                              [
+                                if (vehicle.make.trim().isNotEmpty)
+                                  vehicle.make.trim(),
+                                vehicle.model.trim(),
+                                '${vehicle.year}',
+                              ].join(' '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context)
@@ -172,7 +177,7 @@ class DashboardPage extends StatelessWidget {
                                   .headlineMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.w800,
-                                    fontSize: 28,
+                                    fontSize: 26,
                                     letterSpacing: -0.5,
                                   ),
                             ),
@@ -279,6 +284,44 @@ class DashboardPage extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+
+                // Quick Actions Row
+                Text(
+                  isArabic ? 'إجراءات سريعة' : 'Quick actions',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: colors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _QuickActionTile(
+                        icon: Icons.local_gas_station_rounded,
+                        label: isArabic ? 'وقود' : 'Log Fuel',
+                        onTap: () => context.push('/fuel/add'),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _QuickActionTile(
+                        icon: Icons.build_rounded,
+                        label: isArabic ? 'صيانة' : 'Service',
+                        onTap: () => context.push('/maintenance/add'),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _QuickActionTile(
+                        icon: Icons.receipt_long_rounded,
+                        label: isArabic ? 'مصروف' : 'Expense',
+                        onTap: () => context.push('/expense/add'),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             );
           },
@@ -315,9 +358,7 @@ class _HeroVehicle360Card extends StatelessWidget {
             Row(
               children: [
                 ProBadgeWidget(
-                  label: isArabic
-                      ? 'نموذج 3D بالذكاء الاصطناعي'
-                      : 'AI-generated 3D model',
+                  label: isArabic ? 'استوديو 360°' : '360° Studio',
                   onTap: onRebuild360,
                 ),
                 const Spacer(),
@@ -644,6 +685,60 @@ class _DocumentCountdownCard extends StatelessWidget {
                       color: valueColor,
                       fontWeight: FontWeight.w800,
                       fontSize: 24,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickActionTile extends StatelessWidget {
+  const _QuickActionTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: colors.textPrimary,
+                      fontWeight: FontWeight.w700,
                     ),
               ),
             ],

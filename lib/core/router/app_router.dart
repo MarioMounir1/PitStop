@@ -208,6 +208,8 @@ class _PitStopNavigationShell extends StatelessWidget {
           children: [
             const Center(child: AdBannerWidget()),
             NavigationBar(
+              backgroundColor: context.appColors.card,
+              surfaceTintColor: Colors.transparent,
               selectedIndex: navigationShell.currentIndex,
               onDestinationSelected: (index) {
                 navigationShell.goBranch(
@@ -218,7 +220,7 @@ class _PitStopNavigationShell extends StatelessWidget {
               destinations: [
                 NavigationDestination(
                   icon: const Icon(Icons.home_outlined),
-                  selectedIcon: const Icon(Icons.home_outlined),
+                  selectedIcon: const Icon(Icons.home_rounded),
                   label: l10n.navDashboard,
                 ),
                 NavigationDestination(
@@ -228,11 +230,11 @@ class _PitStopNavigationShell extends StatelessWidget {
                 ),
                 NavigationDestination(
                   icon: const Icon(Icons.local_gas_station_outlined),
-                  selectedIcon: const Icon(Icons.local_gas_station_outlined),
+                  selectedIcon: const Icon(Icons.local_gas_station_rounded),
                   label: l10n.navFuelAndCosts,
                 ),
                 NavigationDestination(
-                  icon: const Icon(Icons.bar_chart_rounded),
+                  icon: const Icon(Icons.bar_chart_outlined),
                   selectedIcon: const Icon(Icons.bar_chart_rounded),
                   label: l10n.navAnalytics,
                 ),

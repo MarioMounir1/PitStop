@@ -243,7 +243,7 @@ if (pitStopMv) {
         }
       },
       child: SizedBox(
-        height: 206,
+        height: 224,
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
@@ -325,7 +325,7 @@ if (pitStopMv) {
         cardBg: cardBg,
         imageWidget: Image.asset(
           '$bundledDir/${currentAngle.key}.jpg',
-          height: 192,
+          height: 210,
           fit: BoxFit.contain,
           gaplessPlayback: true,
         ),
