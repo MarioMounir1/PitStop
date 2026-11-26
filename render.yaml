@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: pitstop-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: ALLOW_DEV_AUTH
+        value: "false"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: pitstop-redis
+          property: connectionString
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: redis
+    name: pitstop-redis
+    plan: free
+    ipAllowList: []
