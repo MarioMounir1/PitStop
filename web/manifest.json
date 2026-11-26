@@ -1,11 +1,11 @@
 {
-    "name": "pitstop",
-    "short_name": "pitstop",
+    "name": "PitStop",
+    "short_name": "PitStop",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0B0D10",
+    "theme_color": "#FFAE19",
+    "description": "PitStop — Maintenance, fuel and costs.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

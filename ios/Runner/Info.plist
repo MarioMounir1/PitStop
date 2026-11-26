@@ -30,6 +30,13 @@
 	<string>PitStop uses the camera to capture maintenance and expense receipt photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>PitStop accesses your photo library so you can attach receipt images to service records.</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

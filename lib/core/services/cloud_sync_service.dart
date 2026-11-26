@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pitstop/core/services/backup_service.dart';
 
@@ -25,15 +27,23 @@ class CloudSyncResult {
 class CloudSyncService {
   CloudSyncService({
     required this.backupService,
-    this.baseUrl = defaultBaseUrl,
+    String? baseUrl,
     http.Client? client,
-  }) : _client = client ?? http.Client();
+  })  : baseUrl = baseUrl ?? resolveDefaultBaseUrl(),
+        _client = client ?? http.Client();
 
-  /// Android emulator localhost alias (`10.0.2.2` maps to host `localhost:8080`).
-  static const String defaultBaseUrl = String.fromEnvironment(
+  static const String _envBaseUrl = String.fromEnvironment(
     'PITSTOP_API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8080',
   );
+
+  /// Uses `10.0.2.2:8080` on Android emulator and `127.0.0.1:8080` on desktop/iOS/web.
+  static String resolveDefaultBaseUrl() {
+    if (_envBaseUrl.isNotEmpty) return _envBaseUrl;
+    if (!kIsWeb && Platform.isAndroid) {
+      return 'http://10.0.2.2:8080';
+    }
+    return 'http://127.0.0.1:8080';
+  }
 
   final BackupService backupService;
   final String baseUrl;

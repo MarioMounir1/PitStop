@@ -7,6 +7,7 @@ import 'package:pitstop/core/theme/app_colors.dart';
 import 'package:pitstop/core/utils/reminder_calculator.dart';
 import 'package:pitstop/core/widgets/car_turntable_360_widget.dart';
 import 'package:pitstop/core/widgets/empty_state_widget.dart';
+import 'package:pitstop/core/widgets/pitstop_logo_widget.dart';
 import 'package:pitstop/core/widgets/pro_badge_widget.dart';
 import 'package:pitstop/core/widgets/status_chip.dart';
 import 'package:pitstop/features/garage/presentation/bloc/garage_bloc.dart';
@@ -96,12 +97,11 @@ class DashboardPage extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 12, 12, 0),
                     child: Row(
                       children: [
-                        Text(
-                          l10n.appName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                        const PitStopIconBadge(size: 34, forceWheelMark: true),
+                        const SizedBox(width: 10),
+                        const PitStopWordmark(
+                          fontSize: 22,
+                          showCheckeredStripe: false,
                         ),
                         const Spacer(),
                         IconButton(
@@ -238,6 +238,8 @@ class DashboardPage extends StatelessWidget {
                 _HeroVehicle360Card(
                   vehicle: vehicle,
                   isArabic: isArabic,
+                  onRebuild360: () =>
+                      context.push('/vehicle/edit', extra: vehicle),
                   onUpdateOdometer: () =>
                       _showQuickOdometerDialog(context, vehicle),
                 ),
@@ -290,11 +292,13 @@ class _HeroVehicle360Card extends StatelessWidget {
   const _HeroVehicle360Card({
     required this.vehicle,
     required this.isArabic,
+    required this.onRebuild360,
     required this.onUpdateOdometer,
   });
 
   final Vehicle vehicle;
   final bool isArabic;
+  final VoidCallback onRebuild360;
   final VoidCallback onUpdateOdometer;
 
   @override
@@ -314,6 +318,7 @@ class _HeroVehicle360Card extends StatelessWidget {
                   label: isArabic
                       ? 'نموذج 3D بالذكاء الاصطناعي'
                       : 'AI-generated 3D model',
+                  onTap: onRebuild360,
                 ),
                 const Spacer(),
                 Text(
@@ -327,6 +332,8 @@ class _HeroVehicle360Card extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             CarTurntable360Viewer(
+              make: vehicle.make,
+              model: vehicle.model,
               vehicleColor: vehicle.color,
               carViewsJson: vehicle.carViewsJson,
             ),

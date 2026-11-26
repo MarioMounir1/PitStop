@@ -185,6 +185,44 @@ class NotificationService {
     }
   }
 
+  /// Displays an immediate notification (used for foreground FCM push messages).
+  Future<void> showInstantNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    if (kIsWeb) return;
+    if (!_initialized) {
+      await initialize();
+    }
+    const details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        _channelId,
+        _channelName,
+        channelDescription: _channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+    try {
+      await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: details,
+        payload: payload,
+      );
+    } catch (e) {
+      debugPrint('NotificationService.showInstantNotification failed: $e');
+    }
+  }
+
   /// Cancels a single scheduled reminder by [id].
   Future<void> cancelReminder(int id) async {
     try {

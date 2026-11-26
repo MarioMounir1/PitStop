@@ -14,9 +14,10 @@ import 'package:pitstop/core/utils/currency_formatter.dart';
 /// Generates A4 Resale Maintenance Reports in Arabic (RTL) or English (LTR)
 /// with optional PitStop Free watermarking.
 class PdfService {
-  static const PdfColor _navyDark = PdfColor.fromInt(0xFF0B0F17);
-  static const PdfColor _navyCard = PdfColor.fromInt(0xFF141A26);
-  static const PdfColor _accentBlue = PdfColor.fromInt(0xFF3B82F6);
+  static const PdfColor _navyDark = PdfColor.fromInt(0xFF0B0D10);
+  static const PdfColor _navyCard = PdfColor.fromInt(0xFF141820);
+  static const PdfColor _accentBlue = PdfColor.fromInt(0xFFFFAE19);
+  static const PdfColor _racingRed = PdfColor.fromInt(0xFFE53935);
   static const PdfColor _borderLight = PdfColor.fromInt(0xFFE2E8F0);
   static const PdfColor _surfaceLight = PdfColor.fromInt(0xFFF8FAFC);
   static const PdfColor _textPrimary = PdfColor.fromInt(0xFF0F172A);
@@ -258,16 +259,35 @@ class PdfService {
                 ),
               ),
               pw.SizedBox(width: 8),
-              pw.Text(
-                isArabic
-                    ? 'بيت ستوب — تقرير صيانة لإعادة البيع'
-                    : 'PITSTOP — Vehicle Resale Maintenance Report',
-                style: pw.TextStyle(
-                  fontSize: 12,
-                  fontWeight: pw.FontWeight.bold,
-                  color: _navyDark,
+              if (isArabic)
+                pw.Text(
+                  'بيت ستوب — تقرير صيانة لإعادة البيع',
+                  style: pw.TextStyle(
+                    fontSize: 12,
+                    fontWeight: pw.FontWeight.bold,
+                    color: _navyDark,
+                  ),
+                )
+              else
+                pw.RichText(
+                  text: pw.TextSpan(
+                    style: pw.TextStyle(
+                      fontSize: 12,
+                      fontWeight: pw.FontWeight.bold,
+                      color: _navyDark,
+                    ),
+                    children: [
+                      const pw.TextSpan(text: 'PIT '),
+                      pw.TextSpan(
+                        text: 'STOP',
+                        style: const pw.TextStyle(color: _racingRed),
+                      ),
+                      const pw.TextSpan(
+                        text: ' — Vehicle Resale Maintenance Report',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
           pw.Text(

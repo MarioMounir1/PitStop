@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
+import 'package:pitstop/core/widgets/pitstop_logo_widget.dart';
 import 'package:pitstop/features/auth/cubit/auth_cubit.dart';
 import 'package:pitstop/features/auth/cubit/auth_state.dart';
 
@@ -157,40 +158,23 @@ class _SignInPageState extends State<SignInPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Brand Header
+                    const Center(child: PitStopIconBadge(size: 84)),
+                    const SizedBox(height: 14),
                     Center(
-                      child: Container(
-                        width: 68,
-                        height: 68,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AppColors.primary, AppColors.primaryDark],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(
-                          Icons.directions_car_filled_rounded,
-                          color: Colors.white,
-                          size: 36,
-                        ),
+                      child: PitStopWordmark(
+                        fontSize: 28,
+                        tagline: isArabic
+                            ? 'الصيانة والوقود والمصاريف'
+                            : 'Maintenance, fuel and costs',
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    Text(
-                      isArabic ? 'بيت ستوب' : 'PitStop',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Text(
                       isArabic
                           ? 'سجّل الدخول لمزامنة سياراتك وصياناتك بأمان على السحابة'
                           : 'Sign in to sync your garage, maintenance & fuel logs to the cloud',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: colors.textSecondary,
                           ),
                     ),

@@ -8,6 +8,7 @@ import 'package:pitstop/core/services/cloud_sync_service.dart';
 import 'package:pitstop/core/services/monetization_service.dart';
 import 'package:pitstop/core/services/notification_service.dart';
 import 'package:pitstop/core/services/pdf_service.dart';
+import 'package:pitstop/core/services/push_notification_service.dart';
 import 'package:pitstop/features/analytics/presentation/bloc/analytics_bloc.dart';
 import 'package:pitstop/features/auth/cubit/auth_cubit.dart';
 import 'package:pitstop/features/expenses/data/repositories/expenses_repository_impl.dart';
@@ -52,7 +53,16 @@ Future<void> initDependencies() async {
     () => CloudSyncService(backupService: sl<BackupService>()),
   );
   sl.registerLazySingleton<CarViewGeneratorService>(
-    () => CarViewGeneratorService(authService: sl<AuthService>()),
+    () => CarViewGeneratorService(
+      authService: sl<AuthService>(),
+      prefs: sl<SharedPreferences>(),
+    ),
+  );
+  sl.registerLazySingleton<PushNotificationService>(
+    () => PushNotificationService(
+      authService: sl<AuthService>(),
+      notificationService: sl<NotificationService>(),
+    ),
   );
 
   // Repositories

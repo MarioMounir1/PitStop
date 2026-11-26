@@ -1,6 +1,9 @@
 import 'dotenv/config';
 import { createApp } from './app';
 import { initFirebase } from './config/firebase';
+import { getRedisUrl } from './config/redis';
+import { BullMqNotificationQueue } from './queues/notificationQueue';
+import { FirebasePushService } from './services/pushService';
 
 const port = Number(process.env.PORT ?? 8080);
 
@@ -21,8 +24,31 @@ if (
   );
 }
 
-const app = createApp();
+const pushService = new FirebasePushService();
+const redisUrl = getRedisUrl();
+const notificationQueue = new BullMqNotificationQueue(pushService, redisUrl);
 
-app.listen(port, () => {
+if (redisUrl) {
+  notificationQueue.startWorker();
+  console.log(`BullMQ notification worker started on Redis (${redisUrl}).`);
+} else {
+  console.warn(
+    'REDIS_URL not set — notifications will use direct FCM delivery without BullMQ queuing.',
+  );
+}
+
+const app = createApp({ pushService, notificationQueue });
+
+const server = app.listen(port, () => {
   console.log(`PitStop Node.js + Firebase backend listening on http://localhost:${port}`);
 });
+
+async function shutdown(signal: string): Promise<void> {
+  console.log(`Received ${signal}, shutting down gracefully...`);
+  server.close();
+  await notificationQueue.close();
+  process.exit(0);
+}
+
+process.on('SIGINT', () => void shutdown('SIGINT'));
+process.on('SIGTERM', () => void shutdown('SIGTERM'));

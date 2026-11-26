@@ -84,6 +84,7 @@ class _AddEditVehiclePageState extends State<AddEditVehiclePage> {
     },
     localPathsByAngle: const {},
     usedAiImages: false,
+    blueprint: const Car3dBlueprint(),
   );
   StreamSubscription<CarViewsProgress>? _generationSub;
 
@@ -167,6 +168,11 @@ class _AddEditVehiclePageState extends State<AddEditVehiclePage> {
         },
         localPathsByAngle: const {},
         usedAiImages: false,
+        blueprint: Car3dBlueprint.heuristic(
+          make: make,
+          model: model,
+          color: color,
+        ),
       );
     });
 
@@ -409,7 +415,10 @@ class _AddEditVehiclePageState extends State<AddEditVehiclePage> {
                             angle: angle,
                             status: status,
                             imagePath: imagePath,
+                            make: make,
+                            model: model,
                             vehicleColor: color,
+                            blueprint: _viewsProgress.blueprint,
                             isArabic: isArabic,
                           );
                         },
@@ -430,9 +439,10 @@ class _AddEditVehiclePageState extends State<AddEditVehiclePage> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        isArabic
-                            ? 'متصل: جاهز · متقطع: قيد الإنشاء · خافت: بالانتظار'
-                            : 'Solid: ready · Dashed: building · Dim: waiting',
+                        _viewsProgress.statusNote ??
+                            (isArabic
+                                ? 'متصل: جاهز · متقطع: قيد الإنشاء · خافت: بالانتظار'
+                                : 'Solid: ready · Dashed: building · Dim: waiting'),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: colors.textSecondary,
                               fontSize: 12,
@@ -784,7 +794,10 @@ class _AngleStatusTile extends StatelessWidget {
   const _AngleStatusTile({
     required this.angle,
     required this.status,
+    required this.make,
+    required this.model,
     required this.vehicleColor,
+    required this.blueprint,
     required this.isArabic,
     this.imagePath,
   });
@@ -792,7 +805,10 @@ class _AngleStatusTile extends StatelessWidget {
   final CarViewAngle angle;
   final CarAngleBuildStatus status;
   final String? imagePath;
+  final String make;
+  final String model;
   final String vehicleColor;
+  final Car3dBlueprint blueprint;
   final bool isArabic;
 
   @override
@@ -809,7 +825,10 @@ class _AngleStatusTile extends StatelessWidget {
                 child: CarAngleArtwork(
                   angle: angle,
                   imagePath: imagePath,
+                  make: make,
+                  model: model,
                   vehicleColor: vehicleColor,
+                  blueprint: blueprint,
                 ),
               ),
             ),

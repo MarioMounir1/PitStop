@@ -35,7 +35,9 @@ dependencies:
   http: ^1.6.0
   firebase_core: ^5.2.0
   firebase_auth: ^7.1.0
+  firebase_messaging: ^17.1.0
   google_sign_in: ^7.2.0
+  model_viewer_plus: ^1.10.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +49,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/images/
+    - assets/images/cars/bmw_320i_2026/
+    - assets/models/
 
   fonts:
     - family: Cairo

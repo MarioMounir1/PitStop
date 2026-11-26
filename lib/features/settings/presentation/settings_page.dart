@@ -40,9 +40,9 @@ class SettingsPage extends StatelessWidget {
       await service.exportAndShare();
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Backup export failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Backup export failed: $e')));
     }
   }
 
@@ -121,9 +121,9 @@ class SettingsPage extends StatelessWidget {
       );
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Restore failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Restore failed: $e')));
     }
   }
 
@@ -138,9 +138,7 @@ class SettingsPage extends StatelessWidget {
         return BlocBuilder<EntitlementCubit, EntitlementState>(
           builder: (context, entitlement) {
             return Scaffold(
-              appBar: AppBar(
-                title: Text(isArabic ? 'الإعدادات' : 'Settings'),
-              ),
+              appBar: AppBar(title: Text(isArabic ? 'الإعدادات' : 'Settings')),
               body: Column(
                 children: [
                   Expanded(
@@ -160,7 +158,9 @@ class SettingsPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         _SectionHeader(
-                          title: isArabic ? 'المظهر واللغة' : 'Appearance & Language',
+                          title: isArabic
+                              ? 'المظهر واللغة'
+                              : 'Appearance & Language',
                         ),
                         const SizedBox(height: 8),
                         Card(
@@ -204,7 +204,9 @@ class SettingsPage extends StatelessWidget {
                                             label: Text('العربية'),
                                           ),
                                         ],
-                                        selected: {settings.locale.languageCode},
+                                        selected: {
+                                          settings.locale.languageCode,
+                                        },
                                         onSelectionChanged: (selection) {
                                           context
                                               .read<SettingsCubit>()
@@ -284,7 +286,9 @@ class SettingsPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         _SectionHeader(
-                          title: isArabic ? 'الوحدات والعملة' : 'Units & Currency',
+                          title: isArabic
+                              ? 'الوحدات والعملة'
+                              : 'Units & Currency',
                         ),
                         const SizedBox(height: 8),
                         Card(
@@ -296,7 +300,9 @@ class SettingsPage extends StatelessWidget {
                                   color: colors.textSecondary,
                                 ),
                                 title: Text(
-                                  isArabic ? 'وحدة المسافة الافتراضية' : 'Default Distance Unit',
+                                  isArabic
+                                      ? 'وحدة المسافة الافتراضية'
+                                      : 'Default Distance Unit',
                                 ),
                                 trailing: SegmentedButton<String>(
                                   showSelectedIcon: false,
@@ -325,7 +331,9 @@ class SettingsPage extends StatelessWidget {
                                   color: colors.textSecondary,
                                 ),
                                 title: Text(
-                                  isArabic ? 'العملة الافتراضية' : 'Default Currency',
+                                  isArabic
+                                      ? 'العملة الافتراضية'
+                                      : 'Default Currency',
                                 ),
                                 trailing: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
@@ -357,6 +365,17 @@ class SettingsPage extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
+                        const SizedBox(height: 20),
+                        _SectionHeader(
+                          title: isArabic
+                              ? 'نموذج السيارة 360° (Gemini AI)'
+                              : '360° Car Studio (Gemini AI)',
+                        ),
+                        const SizedBox(height: 8),
+                        _GeminiApiKeyCard(
+                          currentKey: settings.geminiApiKey,
+                          isArabic: isArabic,
                         ),
                         const SizedBox(height: 20),
                         _SectionHeader(
@@ -455,9 +474,9 @@ class _AccountAndSyncCard extends StatelessWidget {
       listener: (context, state) {
         final msg = state.error ?? state.statusMessage;
         if (msg != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(msg)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(msg)));
           context.read<AuthCubit>().clearMessages();
         }
       },
@@ -491,9 +510,7 @@ class _AccountAndSyncCard extends StatelessWidget {
                           isArabic
                               ? 'الحساب والمزامنة السحابية'
                               : 'Account & Cloud Sync',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
+                          style: Theme.of(context).textTheme.titleSmall
                               ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 2),
@@ -501,9 +518,7 @@ class _AccountAndSyncCard extends StatelessWidget {
                           isArabic
                               ? 'سجّل الدخول لحفظ بياناتك على Firebase'
                               : 'Sign in to sync your garage with Firebase',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
+                          style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: colors.textSecondary),
                         ),
                       ],
@@ -522,8 +537,8 @@ class _AccountAndSyncCard extends StatelessWidget {
         final displayTitle = user.isAnonymous
             ? (isArabic ? 'حساب ضيف' : 'Guest Account')
             : (user.displayName?.isNotEmpty == true
-                ? user.displayName!
-                : (user.email ?? 'PitStop User'));
+                  ? user.displayName!
+                  : (user.email ?? 'PitStop User'));
 
         return Card(
           child: Padding(
@@ -534,7 +549,9 @@ class _AccountAndSyncCard extends StatelessWidget {
                 Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: AppColors.primary.withValues(alpha: 0.16),
+                      backgroundColor: AppColors.primary.withValues(
+                        alpha: 0.16,
+                      ),
                       child: const Icon(
                         Icons.person_rounded,
                         color: AppColors.primary,
@@ -547,17 +564,13 @@ class _AccountAndSyncCard extends StatelessWidget {
                         children: [
                           Text(
                             displayTitle,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
+                            style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(fontWeight: FontWeight.w700),
                           ),
                           if (user.email != null && user.email!.isNotEmpty)
                             Text(
                               user.email!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
+                              style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(color: colors.textSecondary),
                             ),
                         ],
@@ -597,8 +610,10 @@ class _AccountAndSyncCard extends StatelessWidget {
                                     .syncPullFromCloud();
                                 if (ok) onRestored?.call();
                               },
-                        icon:
-                            const Icon(Icons.cloud_download_outlined, size: 18),
+                        icon: const Icon(
+                          Icons.cloud_download_outlined,
+                          size: 18,
+                        ),
                         label: Text(isArabic ? 'استعادة' : 'Pull Sync'),
                       ),
                     ),
@@ -625,9 +640,9 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: context.appColors.textSecondary,
-              fontWeight: FontWeight.w700,
-            ),
+          color: context.appColors.textSecondary,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
@@ -656,11 +671,7 @@ class _ProUpgradeCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.verified_rounded,
-              color: AppColors.ok,
-              size: 28,
-            ),
+            const Icon(Icons.verified_rounded, color: AppColors.ok, size: 28),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -669,17 +680,17 @@ class _ProUpgradeCard extends StatelessWidget {
                   Text(
                     isArabic ? 'بيت ستوب برو مفعّل' : 'PitStop Pro Active',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.ok,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ok,
+                    ),
                   ),
                   Text(
                     isArabic
                         ? 'جميع المزايا الاحترافية متاحة بدون إعلانات.'
                         : 'All Pro features unlocked with zero ads.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: context.appColors.textSecondary,
-                        ),
+                      color: context.appColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -697,14 +708,12 @@ class _ProUpgradeCard extends StatelessWidget {
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF1D4ED8), Color(0xFF1E2638)],
+            colors: [Color(0xFF2B200E), Color(0xFF151922)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.55),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.55)),
         ),
         child: Row(
           children: [
@@ -715,11 +724,13 @@ class _ProUpgradeCard extends StatelessWidget {
                   const ProBadgeWidget(),
                   const SizedBox(height: 10),
                   Text(
-                    isArabic ? 'ترقية إلى بيت ستوب برو' : 'Upgrade to PitStop Pro',
+                    isArabic
+                        ? 'ترقية إلى بيت ستوب برو'
+                        : 'Upgrade to PitStop Pro',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -727,8 +738,8 @@ class _ProUpgradeCard extends StatelessWidget {
                         ? 'سيارات غير محدودة، تقارير PDF نظيفة، نسخ احتياطي، وبدون إعلانات.'
                         : 'Unlimited cars, clean resale PDFs, JSON backups, and zero ads.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFFCBD5E1),
-                        ),
+                      color: const Color(0xFFCBD5E1),
+                    ),
                   ),
                 ],
               ),
@@ -741,6 +752,90 @@ class _ProUpgradeCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _GeminiApiKeyCard extends StatelessWidget {
+  const _GeminiApiKeyCard({required this.currentKey, required this.isArabic});
+
+  final String currentKey;
+  final bool isArabic;
+
+  Future<void> _showKeyDialog(BuildContext context) async {
+    final controller = TextEditingController(text: currentKey);
+    final saved = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(isArabic ? 'مفتاح Gemini API' : 'Gemini API Key'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isArabic
+                  ? 'يُستخدم لتوليد صور 360° واقعية (Paid Tier) أو مجسم 3D مخصص لسيارتك (Free Tier).'
+                  : 'Used for 8-angle photorealistic renders (Paid Tier) or tailored Gemini 3D vehicle blueprints (Free Tier).',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              obscureText: true,
+              decoration: const InputDecoration(hintText: 'AQ.... or AIza...'),
+            ),
+          ],
+        ),
+        actions: [
+          if (currentKey.isNotEmpty)
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(''),
+              child: Text(
+                isArabic ? 'مسح' : 'Clear',
+                style: const TextStyle(color: AppColors.overdue),
+              ),
+            ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(null),
+            child: Text(isArabic ? 'إلغاء' : 'Cancel'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(controller.text.trim()),
+            child: Text(isArabic ? 'حفظ' : 'Save'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (saved != null && context.mounted) {
+      await context.read<SettingsCubit>().setGeminiApiKey(saved);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final hasKey = currentKey.trim().isNotEmpty;
+    final masked = hasKey && currentKey.length > 10
+        ? '${currentKey.substring(0, 6)}••••••••${currentKey.substring(currentKey.length - 4)}'
+        : (hasKey ? '••••••••' : (isArabic ? 'غير مُعَد' : 'Not configured'));
+
+    return Card(
+      child: ListTile(
+        leading: Icon(
+          Icons.auto_awesome_rounded,
+          color: hasKey ? AppColors.primary : colors.textSecondary,
+        ),
+        title: Text(isArabic ? 'مفتاح Gemini API' : 'Gemini API Key'),
+        subtitle: Text(masked, style: TextStyle(color: colors.textSecondary)),
+        trailing: Icon(
+          Icons.edit_outlined,
+          size: 19,
+          color: colors.textSecondary,
+        ),
+        onTap: () => _showKeyDialog(context),
       ),
     );
   }
