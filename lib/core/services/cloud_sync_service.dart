@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pitstop/core/services/backup_service.dart';
 
@@ -36,13 +34,13 @@ class CloudSyncService {
     'PITSTOP_API_BASE_URL',
   );
 
-  /// Uses `10.0.2.2:8080` on Android emulator and `127.0.0.1:8080` on desktop/iOS/web.
+  static const String productionBaseUrl = 'https://pitstop-50ge.onrender.com';
+
+  /// Defaults to the live production PitStop backend on Render,
+  /// or can be overridden via `--dart-define=PITSTOP_API_BASE_URL=...`.
   static String resolveDefaultBaseUrl() {
     if (_envBaseUrl.isNotEmpty) return _envBaseUrl;
-    if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:8080';
-    }
-    return 'http://127.0.0.1:8080';
+    return productionBaseUrl;
   }
 
   final BackupService backupService;
