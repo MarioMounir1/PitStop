@@ -7,9 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:825533843160:android:b0a900c53ec2dee71139ad",
+        "mobilesdk_app_id": "1:825533843160:android:fdb70f22c135eb6f1139ad",
         "android_client_info": {
           "package_name": "com.mario.PitStop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUNtmtj5NVJmx2llTcL-lDjckDT7XcxSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825533843160:android:b0a900c53ec2dee71139ad",
+        "android_client_info": {
+          "package_name": "com.pitstop.pitstop"
         }
       },
       "oauth_client": [],
