@@ -34,11 +34,6 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="pitstop_reminders" />
 
-        <!-- Google Mobile Ads test App ID (replace with production App ID before release) -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
-
         <!-- flutter_local_notifications receivers for scheduled & boot reminders -->
         <receiver
             android:exported="false"

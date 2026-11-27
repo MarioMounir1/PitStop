@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-/// Wraps RevenueCat (`purchases_flutter`) and AdMob (`google_mobile_ads`)
-/// with a safe debug fallback when API keys are placeholders.
+/// Wraps RevenueCat (`purchases_flutter`) with a safe debug fallback
+/// when API keys are placeholders.
 class MonetizationService {
   MonetizationService({
     this.androidApiKey = _placeholderAndroidKey,
@@ -15,12 +14,6 @@ class MonetizationService {
 
   static const String _placeholderAndroidKey = 'goog_PLACEHOLDER_API_KEY';
   static const String _placeholderIosKey = 'appl_PLACEHOLDER_API_KEY';
-
-  /// Official Google AdMob test banner IDs (replace with production IDs on release).
-  static const String androidBannerAdUnitId =
-      'ca-app-pub-3940256099942544/6300978111';
-  static const String iosBannerAdUnitId =
-      'ca-app-pub-3940256099942544/2934735716';
 
   final String androidApiKey;
   final String iosApiKey;
@@ -32,13 +25,6 @@ class MonetizationService {
 
   bool get isInitialized => _initialized;
   bool get isDebugFallback => _isDebugFallback;
-
-  static String get bannerAdUnitId {
-    if (kIsWeb) return '';
-    if (Platform.isAndroid) return androidBannerAdUnitId;
-    if (Platform.isIOS) return iosBannerAdUnitId;
-    return '';
-  }
 
   bool get _isMobilePlatform =>
       !kIsWeb && (Platform.isAndroid || Platform.isIOS);
@@ -57,18 +43,10 @@ class MonetizationService {
         key == _placeholderIosKey;
   }
 
-  /// Initializes RevenueCat and AdMob safely. Falls back to local debug mode
+  /// Initializes RevenueCat safely. Falls back to local debug mode
   /// if running on desktop/web or if API keys are placeholders.
   Future<void> initialize() async {
     if (_initialized) return;
-
-    if (_isMobilePlatform) {
-      try {
-        await MobileAds.instance.initialize();
-      } catch (e) {
-        debugPrint('MobileAds.initialize skipped: $e');
-      }
-    }
 
     final apiKey = _activeApiKey;
     if (!_isMobilePlatform || _isPlaceholderKey(apiKey)) {

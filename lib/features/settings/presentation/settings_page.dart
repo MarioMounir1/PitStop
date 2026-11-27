@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pitstop/core/services/backup_service.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
-import 'package:pitstop/core/widgets/ad_banner_widget.dart';
 import 'package:pitstop/core/widgets/pro_badge_widget.dart';
 import 'package:pitstop/features/auth/cubit/auth_cubit.dart';
 import 'package:pitstop/features/auth/cubit/auth_state.dart';
@@ -440,7 +439,6 @@ class SettingsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Center(child: AdBannerWidget()),
                 ],
               ),
             );

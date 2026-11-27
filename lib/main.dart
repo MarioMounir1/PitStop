@@ -44,8 +44,6 @@ class _PitStopBootstrapState extends State<_PitStopBootstrap> {
   }
 
   Future<void> _bootstrap() async {
-    final startedAt = DateTime.now();
-
     _updateProgress(0.35, 'Connecting services...');
     try {
       await Firebase.initializeApp();
@@ -61,13 +59,6 @@ class _PitStopBootstrapState extends State<_PitStopBootstrap> {
     sl<PushNotificationService>().initialize();
 
     _updateProgress(1.0, 'Ready');
-
-    // Keep preload visible briefly so the bar completes smoothly.
-    final elapsed = DateTime.now().difference(startedAt);
-    const minDuration = Duration(milliseconds: 850);
-    if (elapsed < minDuration) {
-      await Future<void>.delayed(minDuration - elapsed);
-    }
 
     if (mounted) {
       setState(() => _ready = true);
