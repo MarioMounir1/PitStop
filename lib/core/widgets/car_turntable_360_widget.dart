@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:pitstop/core/services/car_view_generator_service.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
@@ -140,6 +142,193 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   dynamic _webViewController;
   String? _precachedAssetDir;
 
+  static final Map<String, String?> _carPhotoCache = {};
+  String? _resolvedPhotoUrl;
+  String? _photoLookupKey;
+
+  /// Normalizes common make/model shorthand (e.g. "Mercedes e200" -> "Mercedes-Benz E-Class")
+  /// so Wikimedia Commons returns accurate modern-generation car photos.
+  List<String> _buildCommonsQueries() {
+    final rawMake = widget.make.trim();
+    final rawModel = widget.model.trim();
+    final year = widget.year;
+
+    final mkLower = rawMake.toLowerCase();
+    final mdLower = rawModel.toLowerCase();
+
+    final normalizedMake =
+        (mkLower == 'mercedes' || mkLower == 'benz' || mkLower == 'mb')
+            ? 'Mercedes-Benz'
+            : rawMake;
+
+    // Expand Mercedes trim codes like E200 / C200 / S500 into class names as fallback
+    String? classFallback;
+    if (normalizedMake == 'Mercedes-Benz') {
+      if (RegExp(r'^e\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'E-Class';
+      } else if (RegExp(r'^c\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'C-Class';
+      } else if (RegExp(r'^s\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'S-Class';
+      } else if (RegExp(r'^a\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'A-Class';
+      } else if (RegExp(r'^cla\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'CLA';
+      } else if (RegExp(r'^glc\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'GLC';
+      } else if (RegExp(r'^gle\s?\d{3}').hasMatch(mdLower)) {
+        classFallback = 'GLE';
+      }
+    }
+
+    final queries = <String>[];
+    if (year != null) {
+      queries.add('$year $normalizedMake $rawModel');
+      if (classFallback != null) {
+        queries.add('$year $normalizedMake $classFallback');
+      }
+      // For very recent model years (e.g. 2026), also try year-1 and year-2
+      if (year >= 2024) {
+        queries.add('${year - 1} $normalizedMake ${classFallback ?? rawModel}');
+        queries.add('${year - 2} $normalizedMake ${classFallback ?? rawModel}');
+      }
+    }
+    queries.add('$normalizedMake ${classFallback ?? rawModel}');
+    return queries.toSet().toList();
+  }
+
+  int _scoreCommonsCandidate(String title, int? targetYear) {
+    final lower = title.toLowerCase();
+    // Reject non-exterior / non-photo files
+    if (!lower.endsWith('.jpg') &&
+        !lower.endsWith('.jpeg') &&
+        !lower.endsWith('.png') &&
+        !lower.endsWith('.webp')) {
+      return -1000;
+    }
+    for (final bad in const [
+      'interior',
+      'dashboard',
+      'cockpit',
+      'engine',
+      'logo',
+      'badge',
+      'emblem',
+      'wheel',
+      'rim',
+      'headlight',
+      'taillight',
+      'rear',
+      'back',
+      'wreck',
+      'crash',
+    ]) {
+      if (lower.contains(bad)) return -500;
+    }
+
+    int score = 0;
+    if (lower.contains('front') || lower.contains('3/4')) score += 15;
+
+    if (targetYear != null) {
+      final yearMatches = RegExp(r'\b(19\d{2}|20\d{2})\b').allMatches(lower);
+      int? closestDiff;
+      for (final m in yearMatches) {
+        final y = int.tryParse(m.group(1)!);
+        if (y != null) {
+          final diff = (y - targetYear).abs();
+          if (closestDiff == null || diff < closestDiff) {
+            closestDiff = diff;
+          }
+        }
+      }
+      if (closestDiff != null) {
+        if (closestDiff == 0) {
+          score += 100;
+        } else if (closestDiff <= 2) {
+          score += 70;
+        } else if (closestDiff <= 4) {
+          score += 30;
+        } else {
+          // Heavily penalize old generations (e.g. 1989 car for a 2026 vehicle)
+          score -= closestDiff * 15;
+        }
+      }
+    }
+    return score;
+  }
+
+  Future<void> _lookupExactCarPhoto() async {
+    final make = widget.make.trim();
+    final model = widget.model.trim();
+    if (make.isEmpty && model.isEmpty) return;
+
+    final key =
+        '${widget.year ?? ''}|${make.toLowerCase()}|${model.toLowerCase()}';
+    if (_photoLookupKey == key) return;
+    _photoLookupKey = key;
+
+    if (_carPhotoCache.containsKey(key)) {
+      if (mounted) {
+        setState(() => _resolvedPhotoUrl = _carPhotoCache[key]);
+      }
+      return;
+    }
+
+    String? bestUrl;
+    int bestScore = -999;
+
+    for (final query in _buildCommonsQueries()) {
+      try {
+        final uri = Uri.https('commons.wikimedia.org', '/w/api.php', {
+          'action': 'query',
+          'format': 'json',
+          'generator': 'search',
+          'gsrnamespace': '6',
+          'gsrsearch': query,
+          'gsrlimit': '8',
+          'prop': 'imageinfo',
+          'iiprop': 'url',
+          'iiurlwidth': '900',
+        });
+        final res = await http.get(
+          uri,
+          headers: const {'User-Agent': 'PitStopApp/1.0'},
+        ).timeout(const Duration(seconds: 6));
+
+        if (res.statusCode != 200) continue;
+        final decoded = jsonDecode(res.body) as Map<String, dynamic>;
+        final pages = (decoded['query'] as Map<String, dynamic>?)?['pages']
+            as Map<String, dynamic>?;
+        if (pages == null) continue;
+
+        for (final page in pages.values.whereType<Map<String, dynamic>>()) {
+          final title = (page['title'] as String?) ?? '';
+          final infoList = page['imageinfo'] as List?;
+          final info = (infoList != null && infoList.isNotEmpty)
+              ? infoList.first as Map<String, dynamic>?
+              : null;
+          final thumbUrl =
+              (info?['thumburl'] as String?) ?? (info?['url'] as String?);
+          if (thumbUrl == null || thumbUrl.isEmpty) continue;
+
+          final score = _scoreCommonsCandidate(title, widget.year);
+          if (score > bestScore) {
+            bestScore = score;
+            bestUrl = thumbUrl;
+          }
+        }
+
+        // Stop early once we have a high-confidence year-accurate match
+        if (bestUrl != null && bestScore >= 60) break;
+      } catch (_) {}
+    }
+
+    _carPhotoCache[key] = bestUrl;
+    if (mounted && _photoLookupKey == key) {
+      setState(() => _resolvedPhotoUrl = bestUrl);
+    }
+  }
+
   /// Resolves a bundled photorealistic 8-angle studio asset directory for
   /// supported vehicles (e.g., 2026 BMW 320i G20 LCI II).
   String? _resolveBundledStudioDir() {
@@ -159,6 +348,9 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _precacheBundledStudioIfNeeded();
+    if (_resolveBundledStudioDir() == null) {
+      _lookupExactCarPhoto();
+    }
   }
 
   void _precacheBundledStudioIfNeeded() {
@@ -217,7 +409,12 @@ if (pitStopMv) {
         oldWidget.model != widget.model ||
         oldWidget.year != widget.year ||
         oldWidget.vehicleColor != widget.vehicleColor) {
+      _resolvedPhotoUrl = null;
+      _photoLookupKey = null;
       _precacheBundledStudioIfNeeded();
+      if (_resolveBundledStudioDir() == null) {
+        _lookupExactCarPhoto();
+      }
     }
     if (oldWidget.vehicleColor != widget.vehicleColor ||
         oldWidget.carViewsJson != widget.carViewsJson) {
@@ -337,7 +534,42 @@ if (pitStopMv) {
       );
     }
 
-    // 3. Interactive WebGL PBR 3D Car (`assets/models/car_studio.glb`)
+    // 3. Year-accurate real car photo from Wikimedia Commons
+    if (_resolvedPhotoUrl != null) {
+      return SizedBox(
+        height: 224,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                _resolvedPhotoUrl!,
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      cardBg.withValues(alpha: 0.12),
+                      Colors.transparent,
+                      cardBg.withValues(alpha: 0.78),
+                    ],
+                    stops: const [0.0, 0.58, 1.0],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // 4. Offline fallback: Interactive WebGL PBR 3D Car (`assets/models/car_studio.glb`)
     if (_supportsNativeWebGlModelViewer) {
 
       return SizedBox(
