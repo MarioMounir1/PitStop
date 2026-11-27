@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:pitstop/core/services/car_view_generator_service.dart';
 import 'package:pitstop/core/theme/app_colors.dart';
@@ -142,74 +140,6 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   dynamic _webViewController;
   String? _precachedAssetDir;
 
-  static final Map<String, String?> _wikiPhotoCache = {};
-  String? _resolvedPhotoUrl;
-  String? _photoLookupKey;
-
-  Future<void> _lookupRealCarPhoto() async {
-    final make = widget.make.trim();
-    final model = widget.model.trim();
-    if (make.isEmpty && model.isEmpty) return;
-
-    final key = '${make.toLowerCase()}|${model.toLowerCase()}';
-    if (_photoLookupKey == key) return;
-    _photoLookupKey = key;
-
-    if (_wikiPhotoCache.containsKey(key)) {
-      if (mounted) {
-        setState(() => _resolvedPhotoUrl = _wikiPhotoCache[key]);
-      }
-      return;
-    }
-
-    try {
-      final query = '$make $model'.trim();
-      final searchUri = Uri.https('en.wikipedia.org', '/w/api.php', {
-        'action': 'query',
-        'format': 'json',
-        'generator': 'search',
-        'gsrsearch': '$query car',
-        'gsrlimit': '3',
-        'prop': 'pageimages',
-        'piprop': 'thumbnail',
-        'pithumbsize': '900',
-      });
-      final res = await http.get(
-        searchUri,
-        headers: const {'User-Agent': 'PitStopApp/1.0'},
-      ).timeout(const Duration(seconds: 6));
-
-      String? foundUrl;
-      if (res.statusCode == 200) {
-        final decoded = jsonDecode(res.body) as Map<String, dynamic>;
-        final pages = (decoded['query'] as Map<String, dynamic>?)?['pages']
-            as Map<String, dynamic>?;
-        if (pages != null) {
-          final sorted = pages.values.whereType<Map<String, dynamic>>().toList()
-            ..sort(
-              (a, b) => ((a['index'] as num?) ?? 99)
-                  .compareTo((b['index'] as num?) ?? 99),
-            );
-          for (final page in sorted) {
-            final thumb = (page['thumbnail'] as Map<String, dynamic>?)?['source']
-                as String?;
-            if (thumb != null && thumb.isNotEmpty) {
-              foundUrl = thumb;
-              break;
-            }
-          }
-        }
-      }
-
-      _wikiPhotoCache[key] = foundUrl;
-      if (mounted && _photoLookupKey == key) {
-        setState(() => _resolvedPhotoUrl = foundUrl);
-      }
-    } catch (_) {
-      _wikiPhotoCache[key] = null;
-    }
-  }
-
   /// Resolves a bundled photorealistic 8-angle studio asset directory for
   /// supported vehicles (e.g., 2026 BMW 320i G20 LCI II).
   String? _resolveBundledStudioDir() {
@@ -229,9 +159,6 @@ class _CarTurntable360ViewerState extends State<CarTurntable360Viewer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _precacheBundledStudioIfNeeded();
-    if (_resolveBundledStudioDir() == null) {
-      _lookupRealCarPhoto();
-    }
   }
 
   void _precacheBundledStudioIfNeeded() {
@@ -290,12 +217,7 @@ if (pitStopMv) {
         oldWidget.model != widget.model ||
         oldWidget.year != widget.year ||
         oldWidget.vehicleColor != widget.vehicleColor) {
-      _resolvedPhotoUrl = null;
-      _photoLookupKey = null;
       _precacheBundledStudioIfNeeded();
-      if (_resolveBundledStudioDir() == null) {
-        _lookupRealCarPhoto();
-      }
     }
     if (oldWidget.vehicleColor != widget.vehicleColor ||
         oldWidget.carViewsJson != widget.carViewsJson) {
@@ -415,42 +337,7 @@ if (pitStopMv) {
       );
     }
 
-    // 3. Real car photo resolved from Wikipedia/Wikimedia for ANY make & model
-    if (_resolvedPhotoUrl != null) {
-      return SizedBox(
-        height: 224,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                _resolvedPhotoUrl!,
-                fit: BoxFit.cover,
-                gaplessPlayback: true,
-                errorBuilder: (_, _, _) => const SizedBox.shrink(),
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      cardBg.withValues(alpha: 0.15),
-                      Colors.transparent,
-                      cardBg.withValues(alpha: 0.85),
-                    ],
-                    stops: const [0.0, 0.55, 1.0],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // 4. Offline fallback: WebGL PBR 3D Car (`assets/models/car_studio.glb`)
+    // 3. Interactive WebGL PBR 3D Car (`assets/models/car_studio.glb`)
     if (_supportsNativeWebGlModelViewer) {
 
       return SizedBox(
